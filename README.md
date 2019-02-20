@@ -1,3 +1,5 @@
+# Plugged
+## A social media platform to connect with other fans and creators
 ### Set Up
 
 To start the mongo server run:
