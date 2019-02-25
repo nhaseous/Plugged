@@ -60,12 +60,26 @@ class Navbar extends Component {
         const {isAuthenticated, user} = this.props.auth;
         const authLinks = (
             <ul className="navbar-nav ml-auto">
-                <a href="#" className="nav-link" onClick={this.onLogout.bind(this)}>
-                    <img src={user.avatar} alt={user.name} title={user.name}
-                        className="rounded-circle"
-                        style={{ width: '25px', marginRight: '5px'}} />
-                            Logout
-                </a>
+              <li className="nav-item">
+                <Link className="nav-link" to="/dashboard">Dashboard</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/profile">Profile</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/inbox">Messages</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/connect">Connect</Link>
+              </li>
+              <li className="nav-item">
+                  <a href="#" className="nav-link" onClick={this.onLogout.bind(this)}>
+                      <img src={user.avatar} alt={user.name} title={user.name}
+                          className="rounded-circle"
+                          style={{ width: '25px', marginRight: '5px'}} />
+                              Logout
+                  </a>
+                </li>
             </ul>
         )
       const guestLinks = (
