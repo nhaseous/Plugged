@@ -5,6 +5,8 @@ import store from './store';
 import jwt_decode from 'jwt-decode';
 import setAuthToken from './setAuthToken';
 import { setCurrentUser, logoutUser } from './actions/authentication';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { blue, indigo } from '@material-ui/core/colors'
 
 import Navbar from './components/Navbar';
 import Register from './components/Register';
@@ -16,6 +18,24 @@ import Inbox from './components/Inbox';
 import Profile from './components/Profile';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+const theme = createMuiTheme({
+  palette: {
+    secondary: {
+      main: blue[900]
+    },
+    primary: {
+      main: indigo[700]
+    }
+  },
+  typography: {
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      '"Lato"',
+      'sans-serif'
+    ].join(',')
+  }
+});
 
 if(localStorage.jwtToken) {
   setAuthToken(localStorage.jwtToken);
@@ -32,8 +52,9 @@ if(localStorage.jwtToken) {
 class App extends Component {
   render() {
     return (
-      <Provider store = { store }>
-        <Router>
+      <MuiThemeProvider theme={theme}>
+        <Provider store = { store }>
+          <Router>
             <div>
               <Navbar />
                 <Route exact path="/" component={ Home } />
@@ -48,6 +69,7 @@ class App extends Component {
             </div>
           </Router>
         </Provider>
+      </MuiThemeProvider>
     );
   }
 }
