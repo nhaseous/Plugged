@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+//import IconButton from '@material-ui/core/IconButton';
+//import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import { connect } from 'react-redux';
 import { logoutUser } from '../actions/authentication';
@@ -47,9 +47,15 @@ const styles = theme => ({
     display: 'inline-block',
     marginLeft: 10
   },
-})
+});
 
 class Navbar extends Component {
+    constructor(props){
+        super(props);
+        console.log("Start NavProps: ");
+        console.log(this.props);
+        console.log("End NavProps");
+    }
 
     onLogout(e) {
         e.preventDefault();
@@ -67,7 +73,7 @@ class Navbar extends Component {
                             Logout
                 </a>
             </ul>
-        )
+        );
       const guestLinks = (
         <ul className="navbar-nav ml-auto">
             <li className="nav-item">
@@ -77,7 +83,8 @@ class Navbar extends Component {
                 <Link className="nav-link" to="/login">Sign In</Link>
             </li>
         </ul>
-      )
+      );
+
       const { classes } = this.props;
         return(
           <AppBar position="absolute" color="default" className={classes.appBar}>
@@ -114,10 +121,10 @@ class Navbar extends Component {
 Navbar.propTypes = {
     logoutUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
-}
+};
 
 const mapStateToProps = (state) => ({
     auth: state.auth
-})
+});
 
 export default connect(mapStateToProps, { logoutUser })(withRouter(withStyles(styles)(Navbar)));
