@@ -9,6 +9,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Divider from '@material-ui/core/Divider';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Paper from '@material-ui/core/Paper';
 import { withStyles } from "@material-ui/core/styles";
 
 require('../styles/Inbox.css');
@@ -72,40 +74,43 @@ class Inbox extends Component {
     const { classes } = this.props;
       return (
         <React.Fragment>
+        <CssBaseline />
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          classes={{
+            paper: "drawerPaper",
+          }}
+        >
+        <div className={classes.toolbar} />
+        <div className={classes.toolbar} />
+          <List>
+            {['New', 'All', 'Archived'].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon><MailIcon /></ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {['John Wick', 'Rick Astley', 'Dexter'].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon><MailIcon /></ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+        <Paper className={classes.paper}>
           <div className={classes.header}>
               <h3>Inbox</h3>
           </div>
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-              paper: "drawerPaper",
-            }}
-          >
-          <div className={classes.toolbar} />
-          <div className={classes.toolbar} />
-            <List>
-              {['New', 'All', 'Archived'].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon><MailIcon /></ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List>
-            <Divider />
-            <List>
-              {['John Wick', 'Rick Astley', 'Dexter'].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon><MailIcon /></ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List>
-          </Drawer>
           <div className="container inbox-container">
           <Messages messages={messages} />
           <ChatInput onSend={this.sendHandler} />
         </div>
+      </Paper>
       </React.Fragment>
     );
   }
