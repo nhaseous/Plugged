@@ -56,16 +56,8 @@ const styles = theme => ({
     transition: theme.transitions.create('opacity'),
   },
   imageTitle: {
+    position: 'relative',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 4}px ${theme.spacing.unit + 6}px`,
-  },
-  imageMarked: {
-    height: 3,
-    width: 18,
-    backgroundColor: theme.palette.common.white,
-    position: 'absolute',
-    bottom: -2,
-    left: 'calc(50% - 9px)',
-    transition: theme.transitions.create('opacity'),
   },
 });
 
@@ -121,7 +113,6 @@ class Connect extends Component {
                   className={classes.imageTitle}
                 >
                   {image.title}
-                  <span className={classes.imageMarked} />
                 </Typography>
               </span>
             </ButtonBase>
