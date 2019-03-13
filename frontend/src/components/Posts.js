@@ -7,6 +7,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography'
 
 const styles = theme => ({
     root: {
@@ -15,14 +17,19 @@ const styles = theme => ({
         overflowX: 'auto',
     },
     table: {
-        maxWidth: 700,
+        maxWidth: 2500,
+        backgroundColor: 'gray'
     },
+    cell: {
+        display: 'flex',
+        justifyContent: 'space-evenly'
+    }
 });
 
 let id = 0;
-let createData = name => {
+let createData = msg => {
     id += 1;
-    return { id, name};
+    return { id, msg};
 };
 
 class SimpleTable extends Component {
@@ -40,14 +47,15 @@ class SimpleTable extends Component {
                 <Table className={this.props.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell align="centerdir">Posts</TableCell>
+                            <TableCell align="center">Posts</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map(row => (
+                        {data.map( row => (
                             <TableRow key={row.id}>
-                                <TableCell align="center" component="th" scope="row">
-                                    {row.name}
+                                <TableCell className={this.props.cell} component="th" scope="row">
+                                    <Avatar alt="User pic" src={this.props.image}/>
+                                    <Typography variant="body1" align-self="center"> {row.msg} </Typography>
                                 </TableCell>
                             </TableRow>
                         ))}

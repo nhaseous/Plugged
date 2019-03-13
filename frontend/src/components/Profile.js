@@ -5,6 +5,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 //import Paper from '@material-ui/core/Paper';
+import Table from "./Posts.js";
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -22,6 +23,8 @@ const styles = theme => ({
     },
 });
 
+const posts = ['Rolling Loud was amazing', 'Kanye is going crazy', 'I cannot wait for Schoolboys album'];
+
 class Profile extends Component {
     constructor(props) {
         super(props);
@@ -34,7 +37,7 @@ class Profile extends Component {
                 <CssBaseline />
                 <Grid container className={classes.main}>
                     <Grid item xs={2}>
-                        <Avatar alt="Nha Tran" src="https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpg" className={classes.avatar} />
+                        <Avatar alt="Nha Tran" src="https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga" className={classes.avatar} />
                     </Grid>
                     <Grid item xs={8}>
                         <Grid container>
@@ -89,6 +92,7 @@ class Profile extends Component {
                         />
                     </Grid>
                 </Grid>
+                <Table rows = { posts } image = "https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga"/>
             </React.Fragment>
         );
     }

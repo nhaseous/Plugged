@@ -6,8 +6,10 @@ import {withStyles} from '@material-ui/core/styles';
 
 const styles = {
     card: {
-        maxWidth: 700,
+        minWidth: 500,
+        minHeight: 250,
         display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
         background: 'linear-gradient(45deg, #0277bd 45%, #b2dfdb 55%)'
     },
@@ -27,7 +29,8 @@ const styles = {
     center: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-evenly'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     content: {
         justifyContent: 'center'
