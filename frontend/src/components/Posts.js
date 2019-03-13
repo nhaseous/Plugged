@@ -40,7 +40,7 @@ class SimpleTable extends Component {
                 <Table className={this.props.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center">Posts</TableCell>
+                            <TableCell align="centerdir">Posts</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
