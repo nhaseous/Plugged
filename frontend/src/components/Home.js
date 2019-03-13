@@ -6,7 +6,7 @@ import {withStyles} from '@material-ui/core/styles';
 
 const styles = {
     card: {
-        maxWidth: 400,
+        maxWidth: 700,
         display: 'flex',
         justifyContent: 'center',
         background: 'linear-gradient(45deg, #0277bd 45%, #b2dfdb 55%)'
@@ -20,6 +20,9 @@ const styles = {
     block: {
         display: 'flex',
         justifyContent: "center",
+        maxWidth: '100%',
+        alignItem: 'center'
+
     },
     center: {
         display: 'flex',
@@ -36,6 +39,7 @@ const Home = props => {
     const {classes} = props;
 
     return (
+        //Centers the card in the middle of the screen need to fix sizing and centering
         <div className={classes.block}>
             <div className={classes.center}>
                 <Card className={classes.card} raised={true}>
