@@ -48,6 +48,24 @@ const styles = theme => ({
         display: 'inline-block',
         marginLeft: 10
     }
+  },
+  inline: {
+    display: 'inline'
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit'
+  },
+  productLogo: {
+    display: 'inline-block',
+    borderLeft: `1px solid ${theme.palette.grey['A100']}`,
+    marginLeft: 25,
+    paddingLeft: 25
+  },
+  tagline: {
+    display: 'inline-block',
+    marginLeft: 10
+  }
 })
 
 class Navbar extends Component {
@@ -61,6 +79,7 @@ class Navbar extends Component {
         const {isAuthenticated, user} = this.props.auth;
         const authLinks = (
             <ul className="navbar-nav ml-auto">
+<<<<<<< HEAD
                 <li className="nav-item">
                     <Link className="nav-link" to="/dashboard">Dashboard</Link>
                 </li>
@@ -95,6 +114,7 @@ class Navbar extends Component {
         )
         const { classes } = this.props;
         return(
+<<<<<<< HEAD
             <AppBar position="absolute" color="default" className={classes.appBar}>
                 <Toolbar>
                     <Grid container spacing={24} alignItems="baseline">
