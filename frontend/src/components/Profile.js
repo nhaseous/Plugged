@@ -23,7 +23,22 @@ const styles = theme => ({
     },
 });
 
-const posts = ['Rolling Loud was amazing', 'Kanye is going crazy', 'I cannot wait for Schoolboys album'];
+const posts = [
+    {
+        imgSrc: "https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga",
+        msg: 'Rolling Loud was amazing',
+        time: 'December 17, 2018 03:24:00'
+    },
+    {
+        imgSrc: "https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga",
+        msg: 'Kanye is going crazy',
+        time: 'December 18, 2018 03:24:00'
+    },
+    {
+        imgSrc: "https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga",
+        msg: 'I cannot wait for Schoolboys album',
+        time:'December 19, 2018 03:24:00'
+    }];
 
 class Profile extends Component {
     constructor(props) {
@@ -92,7 +107,7 @@ class Profile extends Component {
                         />
                     </Grid>
                 </Grid>
-                <Table rows = { posts } image = "https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga"/>
+                <Table rows = { posts } />
             </React.Fragment>
         );
     }

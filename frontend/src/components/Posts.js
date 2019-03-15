@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -23,17 +23,17 @@ const styles = theme => ({
     cell: {
         display: 'flex',
         justifyContent: 'space-evenly'
-    }
+    },
 });
 
 let id = 0;
-let createData = msg => {
+let createData = el => {
     id += 1;
-    return { id, msg};
+    return { id, ...el };
 };
 
 class SimpleTable extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         console.log(props);
     }
@@ -41,6 +41,11 @@ class SimpleTable extends Component {
 
     render() {
         const data = this.props.rows.map(el => createData(el));
+        const sent = time => {
+            let diff = Date.now() - new Date(time);
+        };
+
+        console.log(data);
 
         return (
             <Paper className={this.props.root}>
@@ -51,10 +56,13 @@ class SimpleTable extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map( row => (
+                        {data.map(row => (
                             <TableRow key={row.id}>
                                 <TableCell className={this.props.cell} component="th" scope="row">
-                                    <Avatar alt="User pic" src={this.props.image}/>
+                                    <div display="inline-flex" flex-direction="row">
+                                        <Avatar alt="User pic" src={row.imgSrc}/>
+                                        <Typography variant="caption" align-self="right">Time</Typography>
+                                    </div>
                                     <Typography variant="body1" align-self="center"> {row.msg} </Typography>
                                 </TableCell>
                             </TableRow>
