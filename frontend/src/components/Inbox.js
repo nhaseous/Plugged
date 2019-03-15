@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { Component } from 'react';
 import Messages from './Messages';
 import ChatInput from './ChatInput';
@@ -12,6 +11,8 @@ import MailIcon from '@material-ui/icons/Mail';
 import Divider from '@material-ui/core/Divider';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from "@material-ui/core/styles";
 
 require('../styles/Inbox.css');
@@ -52,6 +53,12 @@ class Inbox extends Component {
     super(props);
     this.state = { messages: messages };
     this.sendHandler = this.sendHandler.bind(this);
+  }
+
+  componentDidMount() {
+      if(!this.props.auth.isAuthenticated) {
+          this.props.history.push('/');
+      }
   }
 
   sendHandler(message) {
@@ -121,4 +128,12 @@ Inbox.defaultProps = {
   username: 'Anonymous'
 };
 
-export default withStyles(styles)(Inbox);
+Inbox.propTypes = {
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth,
+});
+
+export default connect(mapStateToProps, {  })(withStyles(styles)(Inbox));

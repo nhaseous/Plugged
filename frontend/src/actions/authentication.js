@@ -44,3 +44,15 @@ export const logoutUser = (history) => dispatch => {
     dispatch(setCurrentUser({}));
     history.push('/login');
 }
+
+
+export const editUser = (user, history) => dispatch => {
+  axios.post('/api/users/edit', user)
+          .then(res => history.push('/profile'))
+          .catch(err => {
+              dispatch({
+                  type: GET_ERRORS,
+                  payload: err.response.data
+              });
+          });
+}

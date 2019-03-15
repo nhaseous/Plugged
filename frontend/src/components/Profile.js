@@ -4,23 +4,23 @@ import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-//import Paper from '@material-ui/core/Paper';
 import Table from "./Posts.js";
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
-    main: {
-        margin: 25,
-    },
-    avatar: {
-        margin: 10,
-        width: 100,
-        height: 100,
-    },
-    editButton: {
-        margin: 10,
-    },
+  main: {
+    margin: 25,
+  },
+  avatar: {
+    margin: 10,
+    width: 100,
+    height: 100,
+  },
+  editButton: {
+    margin: 10,
+  },
 });
 
 const posts = [
@@ -41,9 +41,21 @@ const posts = [
     }];
 
 class Profile extends Component {
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  componentDidMount() {
+      if(!this.props.auth.isAuthenticated) {
+          this.props.history.push('/');
+      }
+  }
+
+  handleClick() {
+    this.props.history.push('/profile/edit');
+  }
 
     render() {
         const { classes } = this.props;
@@ -59,7 +71,7 @@ class Profile extends Component {
                             <Typography component="h1" variant="h4" lightWeight>
                                 Nha Tran
                             </Typography>
-                            <Button className={classes.editButton} variant="outlined">
+                            <Button className={classes.editButton} variant="outlined" onClick={this.handleClick}>
                                 Edit Profile
                             </Button>
                         </Grid>
@@ -84,33 +96,18 @@ class Profile extends Component {
                         <Typography variant="subtitle1">I am who I say I am.</Typography>
                     </Grid>
                 </Grid>
-                <Grid container spacing={32}>
-                    <Grid item xs={4}>
-                        <img
-                            alt="post"
-                            style={{ width: '100%' }}
-                            src="https://via.placeholder.com/500/f5f5f5"
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
-                        <img
-                            alt="post"
-                            style={{ width: '100%' }}
-                            src="https://via.placeholder.com/500/f5f5f5"
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
-                        <img
-                            alt="post"
-                            style={{ width: '100%' }}
-                            src="https://via.placeholder.com/500/f5f5f5"
-                        />
-                    </Grid>
-                </Grid>
                 <Table rows = { posts } />
             </React.Fragment>
         );
     }
 }
 
-export default withStyles(styles)(Profile);
+Profile.propTypes = {
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth,
+});
+
+export default connect(mapStateToProps, {  })(withStyles(styles)(Profile));

@@ -117,6 +117,28 @@ router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) =
     });
 });
 
+router.post('/edit', (req, res) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    const password = req.body.password;
+
+    User.findOne({email})
+        .then(user => {
+            if(!user) {
+                errors.email = 'User not found'
+                return res.status(404).json(errors);
+            }
+            else {
+
+              user
+                .save()
+                .then(user => {
+                    res.json(user)
+                });
+            }
+        });
+});
+
 /**
  * Ensures that the redirect is actually from spotify servers by checking random state stored in session storage
  *  against what should be returned by Spotify servers.

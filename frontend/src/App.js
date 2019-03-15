@@ -16,6 +16,7 @@ import Connect from './components/Connect';
 import Dashboard from './components/Dashboard';
 import Inbox from './components/Inbox';
 import Profile from './components/Profile';
+import ProfileEdit from './components/ProfileEdit';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -52,6 +53,7 @@ if(localStorage.jwtToken) {
 class App extends Component {
     render() {
         return (
+          <MuiThemeProvider theme={theme}>
             <Provider store={store}>
                 <Router>
                     <div>
@@ -60,16 +62,16 @@ class App extends Component {
                         <div className="container">
                             <Route exact path="/register" component={Register}/>
                             <Route exact path="/login" component={Login}/>
-                            <Route exact path="/register" component={Register}/>
-                            <Route exact path="/login" component={Login}/>
                             <Route exact path="/connect" component={Connect}/>
                             <Route exact path="/dashboard" component={Dashboard}/>
                             <Route exact path="/inbox" component={Inbox}/>
                             <Route exact path="/profile" component={Profile}/>
+                            <Route exact path="/profile/edit" component={ ProfileEdit } />
                         </div>
                     </div>
                 </Router>
             </Provider>
+          </MuiThemeProvider>
         );
     }
 }
