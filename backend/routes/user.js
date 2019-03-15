@@ -214,7 +214,7 @@ router.get("/ssoauth", (req, res) => {
  * (checkState, checkCode, checkSpotifyInfo) then the mongodb database will be searched for a user. If said user
  * doesn't exist the Spotify user object will be used to fill and create a user
  */
-app.get("/auth/spotify", async (req, res) => {
+router.get("/auth/spotify", async (req, res) => {
     console.log("Hello motherfucker");
     // Must have a temp code from GH
     if (!req.query.code)
