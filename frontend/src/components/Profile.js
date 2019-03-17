@@ -59,21 +59,25 @@ class Profile extends Component {
 
     render() {
         const { classes } = this.props;
+        const {isAuthenticated, user} = this.props.auth;
         return (
             <React.Fragment>
                 <CssBaseline />
                 <Grid container className={classes.main}>
                     <Grid item xs={2}>
-                        <Avatar alt="Nha Tran" src="https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga" className={classes.avatar} />
+                        <Avatar alt="Nha Tran" src={user.avatar} className={classes.avatar} />
                     </Grid>
                     <Grid item xs={8}>
                         <Grid container>
                             <Typography component="h1" variant="h4" lightWeight>
-                                Nha Tran
+                                {user.name}
                             </Typography>
                             <Button className={classes.editButton} variant="outlined" onClick={this.handleClick}>
                                 Edit Profile
                             </Button>
+                            <Typography>
+
+                            </Typography>
                         </Grid>
                         <Grid container spacing={40}>
                             <Grid item>
@@ -83,12 +87,7 @@ class Profile extends Component {
                             </Grid>
                             <Grid item>
                                 <Typography variant="subtitle1">
-                                    <b>325</b> followers
-                                </Typography>
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="subtitle1">
-                                    <b>260</b> following
+                                    <b>325</b> friends
                                 </Typography>
                             </Grid>
                         </Grid>
