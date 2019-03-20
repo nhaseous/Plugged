@@ -87,7 +87,8 @@ router.post('/login', (req, res) => {
                             const payload = {
                                 id: user.id,
                                 name: user.name,
-                                avatar: user.avatar
+                                avatar: user.avatar,
+                                email: user.email
                             }
                             jwt.sign(payload, 'secret', {
                                 expiresIn: 3600
@@ -118,6 +119,13 @@ router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) =
 });
 
 router.post('/edit', (req, res) => {
+
+    const { errors, isValid } = validateLoginInput(req.body);
+
+    if(!isValid) {
+        return res.status(400).json(errors);
+    }
+
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
@@ -128,14 +136,21 @@ router.post('/edit', (req, res) => {
                 errors.email = 'User not found'
                 return res.status(404).json(errors);
             }
-            else {
-
-              user
-                .save()
-                .then(user => {
-                    res.json(user)
-                });
-            }
+            bcrypt.compare(password, user.password)
+                    .then(isMatch => {
+                        if(isMatch) {
+                          user.name = name;
+                          user
+                            .save()
+                            .then(user => {
+                                res.json(user)
+                            });
+                        }
+                        else {
+                            errors.password = 'Incorrect Password';
+                            return res.status(400).json(errors);
+                        }
+                    });
         });
 });
 

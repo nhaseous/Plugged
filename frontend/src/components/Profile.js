@@ -75,9 +75,6 @@ class Profile extends Component {
                             <Button className={classes.editButton} variant="outlined" onClick={this.handleClick}>
                                 Edit Profile
                             </Button>
-                            <Typography>
-
-                            </Typography>
                         </Grid>
                         <Grid container spacing={40}>
                             <Grid item>

@@ -50,6 +50,11 @@ class ProfileEdit extends Component {
         if(!this.props.auth.isAuthenticated) {
             this.props.history.push('/');
         }
+        const {isAuthenticated, user} = this.props.auth;
+        this.setState({
+            name: user.name,
+            email: user.email
+        })
     }
 
     render() {
