@@ -6,8 +6,10 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Table from "./Posts.js";
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import { getMe } from '../actions/authentication';
 
 const styles = theme => ({
   main: {
@@ -40,9 +42,16 @@ const posts = [
         time:'December 19, 2018 03:24:00'
     }];
 
+
+
 class Profile extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+        name: '',
+        email: '',
+        errors: {}
+    }
 
     this.handleClick = this.handleClick.bind(this);
   }
@@ -51,6 +60,12 @@ class Profile extends Component {
       if(!this.props.auth.isAuthenticated) {
           this.props.history.push('/');
       }
+      axios.get('/api/users/me')
+          .then(res => {
+              this.setState({
+                  name: res.data.name
+              })
+          })
   }
 
   handleClick() {
@@ -70,7 +85,7 @@ class Profile extends Component {
                     <Grid item xs={8}>
                         <Grid container>
                             <Typography component="h1" variant="h4" lightWeight>
-                                {user.name}
+                              {this.state.name}
                             </Typography>
                             <Button className={classes.editButton} variant="outlined" onClick={this.handleClick}>
                                 Edit Profile
@@ -99,6 +114,7 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
+    getMe: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
 };
 
@@ -106,4 +122,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
 });
 
-export default connect(mapStateToProps, {  })(withStyles(styles)(Profile));
+export default connect(mapStateToProps, { getMe })(withStyles(styles)(Profile));

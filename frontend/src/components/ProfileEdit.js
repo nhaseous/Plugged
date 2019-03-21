@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { editUser } from '../actions/authentication';
 import classnames from 'classnames';
+import axios from 'axios';
 
 class ProfileEdit extends Component {
 
@@ -50,11 +51,13 @@ class ProfileEdit extends Component {
         if(!this.props.auth.isAuthenticated) {
             this.props.history.push('/');
         }
-        const {isAuthenticated, user} = this.props.auth;
-        this.setState({
-            name: user.name,
-            email: user.email
-        })
+        axios.get('/api/users/me')
+            .then(res => {
+                this.setState({
+                    name: res.data.name,
+                    email: res.data.email
+                })
+            })
     }
 
     render() {
