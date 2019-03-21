@@ -16,11 +16,23 @@ const UserSchema = new Schema({
         required: true
     },
     avatar: {
-        type: String
+        type: String,
+        required: true,
+        default: ''
     },
     date: {
         type: Date,
         default: Date.now
+    },
+    location: {
+        type: String,
+        required: true,
+        default: ''
+    },
+    bio: {
+        type: String,
+        required: true,
+        default: ''
     }
 });
 

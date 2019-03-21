@@ -50,6 +50,9 @@ class Profile extends Component {
     this.state = {
         name: '',
         email: '',
+        avatar: '',
+        location: '',
+        bio: '',
         errors: {}
     }
 
@@ -62,8 +65,12 @@ class Profile extends Component {
       }
       axios.get('/api/users/me')
           .then(res => {
+            console.log(res.data);
               this.setState({
-                  name: res.data.name
+                  name: res.data.name,
+                  avatar: res.data.avatar,
+                  location: res.data.location,
+                  bio: res.data.bio
               })
           })
   }
@@ -80,7 +87,7 @@ class Profile extends Component {
                 <CssBaseline />
                 <Grid container className={classes.main}>
                     <Grid item xs={2}>
-                        <Avatar alt="Nha Tran" src={user.avatar} className={classes.avatar} />
+                        <Avatar alt="Nha Tran" src={this.state.avatar} className={classes.avatar} />
                     </Grid>
                     <Grid item xs={8}>
                         <Grid container>
@@ -103,8 +110,8 @@ class Profile extends Component {
                                 </Typography>
                             </Grid>
                         </Grid>
-                        <Typography variant="subtitle1">Vanderbilt University</Typography>
-                        <Typography variant="subtitle1">I am who I say I am.</Typography>
+                        <Typography variant="subtitle1">{this.state.location}</Typography>
+                        <Typography variant="subtitle2">{this.state.bio}</Typography>
                     </Grid>
                 </Grid>
                 <Table rows = { posts } />

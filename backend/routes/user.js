@@ -111,11 +111,23 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) => {
-    return res.json({
+    const me = {
         id: req.user.id,
         name: req.user.name,
-        email: req.user.email
-    });
+        email: req.user.email,
+        avatar: '',
+        location: '',
+        bio: ''
+    };
+    User.findOne({email: me.email})
+        .then(user => {
+          if (user) {
+            me.avatar = user.avatar;
+            me.location = user.location;
+            me.bio = user.bio;
+          }
+            return res.json(me);
+        });
 });
 
 router.post('/edit', (req, res) => {
@@ -126,20 +138,21 @@ router.post('/edit', (req, res) => {
         return res.status(400).json(errors);
     }
 
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
+    const me = req.body;
 
-    User.findOne({email})
+    User.findOne({email: me.email})
         .then(user => {
             if(!user) {
                 errors.email = 'User not found'
                 return res.status(404).json(errors);
             }
-            bcrypt.compare(password, user.password)
+            bcrypt.compare(me.password, user.password)
                     .then(isMatch => {
                         if(isMatch) {
-                          user.name = name;
+                          user.name = me.name;
+                          user.avatar = me.avatar;
+                          user.location = me.location;
+                          user.bio = me.bio;
                           user
                             .save()
                             .then(user => {

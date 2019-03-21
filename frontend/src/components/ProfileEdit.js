@@ -12,7 +12,10 @@ class ProfileEdit extends Component {
         super();
         this.state = {
             name: '',
+            location: '',
+            bio: '',
             email: '',
+            avatar: '',
             password: '',
             errors: {}
         }
@@ -30,7 +33,10 @@ class ProfileEdit extends Component {
         e.preventDefault();
         const user = {
             name: this.state.name,
+            location: this.state.location,
+            bio: this.state.bio,
             email: this.state.email,
+            avatar: this.state.avatar,
             password: this.state.password,
         }
         this.props.editUser(user, this.props.history);
@@ -53,9 +59,13 @@ class ProfileEdit extends Component {
         }
         axios.get('/api/users/me')
             .then(res => {
+              console.log(res.data);
                 this.setState({
                     name: res.data.name,
-                    email: res.data.email
+                    location: res.data.location,
+                    bio: res.data.bio,
+                    email: res.data.email,
+                    avatar: res.data.avatar
                 })
             })
     }
@@ -81,6 +91,32 @@ class ProfileEdit extends Component {
                 </div>
                 <div className="form-group">
                     <input
+                    type="text"
+                    placeholder="Location"
+                    className={classnames('form-control form-control-lg', {
+                        'is-invalid': errors.location
+                    })}
+                    name="location"
+                    onChange={ this.handleInputChange }
+                    value={ this.state.location }
+                    />
+                    {errors.name && (<div className="invalid-feedback">{errors.name}</div>)}
+                </div>
+                <div className="form-group">
+                    <input
+                    type="text"
+                    placeholder="Bio"
+                    className={classnames('form-control form-control-lg', {
+                        'is-invalid': errors.bio
+                    })}
+                    name="bio"
+                    onChange={ this.handleInputChange }
+                    value={ this.state.bio }
+                    />
+                    {errors.name && (<div className="invalid-feedback">{errors.name}</div>)}
+                </div>
+                <div className="form-group">
+                    <input
                     type="email"
                     placeholder="Email"
                     className={classnames('form-control form-control-lg', {
@@ -89,6 +125,19 @@ class ProfileEdit extends Component {
                     name="email"
                     onChange={ this.handleInputChange }
                     value={ this.state.email }
+                    />
+                    {errors.email && (<div className="invalid-feedback">{errors.email}</div>)}
+                </div>
+                <div className="form-group">
+                    <input
+                    type="text"
+                    placeholder="Avatar url"
+                    className={classnames('form-control form-control-lg', {
+                        'is-invalid': errors.avatar
+                    })}
+                    name="avatar"
+                    onChange={ this.handleInputChange }
+                    value={ this.state.avatar }
                     />
                     {errors.email && (<div className="invalid-feedback">{errors.email}</div>)}
                 </div>
