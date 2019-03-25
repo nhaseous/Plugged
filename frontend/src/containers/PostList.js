@@ -13,7 +13,7 @@ function PostList({ posts, onDelete }) {
   }
   return (
     <div>
-      {posts.reverse().map(post => {
+      {(posts.reverse()).map(post => {
         return (
           <Post post={ post } onDelete={ onDelete } key={ post._id } />
         );
