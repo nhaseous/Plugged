@@ -1,4 +1,5 @@
 import React from 'react';
+import Time from 'react-time'
 
 const styles = {
   borderBottom: '2px solid #eee',
@@ -9,10 +10,13 @@ const styles = {
   borderRadius: '10px'
 };
 
-export default ({ post: { body, _id }, onDelete }) => {
+export default ({ post: { user_id, name, avatar, date, body, _id }, onDelete }) => {
   return (
     <div style={ styles }>
+      <img src={ avatar } alt="avatar" height="42" width="42"></img>&nbsp;
+      <strong>{ name }</strong>
       <p>{ body }</p>
+      <div style={{textAlign: 'right'}}><Time value={date} format="MM/DD/YYYY" /></div>
       <div style={{textAlign: 'right'}}>
         <button className="btn btn-danger" type="button" onClick={() => onDelete(_id)}>
           Remove

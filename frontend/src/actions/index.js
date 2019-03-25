@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const apiUrl = 'http://localhost:5000/api/posts';
 
-export const createPost = ({ body }) => {
+export const createPost = ({ user_id, name, avatar, body }) => {
   return (dispatch) => {
-    return axios.post(`${apiUrl}/add`, {body})
+    return axios.post(`${apiUrl}/add`, {user_id, name, avatar, body})
       .then(response => {
         dispatch(createPostSuccess(response.data))
       })
