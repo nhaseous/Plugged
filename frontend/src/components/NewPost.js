@@ -24,6 +24,7 @@ class NewPost extends Component {
     if (this.state.body.trim()) {
       this.props.onAddPost(this.state);
       this.handleReset();
+      window.location.reload();
     }
   };
 

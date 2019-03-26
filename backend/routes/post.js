@@ -23,7 +23,7 @@ router.route('/').get(function (req, res) {
       console.log(err);
     }
     else {
-      res.json(posts);
+      res.json(posts.reverse());
     }
   });
 });
