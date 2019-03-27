@@ -18,7 +18,7 @@ require('./passport')(passport);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/api/users', users);
+app.use('/routes/users', users);
 
 app.get('/', function(req, res) {
     res.send('hello');
