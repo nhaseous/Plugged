@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Table from "./Posts.js";
 import PropTypes from 'prop-types';
+import Friends from './Friends';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -113,8 +114,11 @@ class Profile extends Component {
                         <Typography variant="subtitle1">{this.state.location}</Typography>
                         <Typography variant="subtitle2">{this.state.bio}</Typography>
                     </Grid>
+                    <Grid item style={{margin: 10}}>
+                      <Friends />
+                    </Grid>
+                    <Grid item xs={7} style={{margin: 10}}> <Table rows = { posts } /></Grid>
                 </Grid>
-                <Table rows = { posts } />
             </React.Fragment>
         );
     }

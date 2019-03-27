@@ -17,6 +17,8 @@
     "gravatar": "^1.8.0",
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.4.14",
+    "mongoose-friends": "^0.2.5",
+    "mongoose-friends-plugin": "^0.7.3",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "validator": "^10.11.0"

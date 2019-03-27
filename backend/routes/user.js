@@ -130,6 +130,48 @@ router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) =
         });
 });
 
+router.get('/me/friends', passport.authenticate('jwt', { session: false }), (req, res) => {
+    User.findOne({_id: req.user.id})
+        .then(user => {
+          if (user) {
+            User.getAcceptedFriends(user)
+            .then((friendships) => {
+              // [{ status: 'requested', added: <Date added>, friend: user2 }]
+              return res.json(friendships);
+            });
+          }
+        });
+});
+
+router.post('/me/friends/add', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log(req.body.email);
+    User.findOne({_id: req.user.id})
+        .then(user1 => {
+          if (user1) {
+            User.findOne({email: req.body.email})
+                .then(user2 => {
+                  if (user2) {
+                    User.requestFriend(user1._id, user2._id)
+                    .then(() => console.log('Request sent'));
+                  }
+                });
+          }
+        });
+});
+
+router.get('/me/friends/pending', passport.authenticate('jwt', { session: false }), (req, res) => {
+    User.findOne({_id: req.user.id})
+        .then(user => {
+          if (user) {
+            User.getPendingFriends(user)
+            .then((friendships) => {
+              // [{ status: 'requested', added: <Date added>, friend: user2 }]
+              return res.json(friendships);
+            });
+          }
+        });
+});
+
 router.post('/edit', (req, res) => {
 
     const { errors, isValid } = validateLoginInput(req.body);

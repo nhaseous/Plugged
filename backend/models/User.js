@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const friendsPlugin = require('mongoose-friends-plugin');
 
 const Schema = mongoose.Schema;
 
@@ -26,15 +27,15 @@ const UserSchema = new Schema({
     },
     location: {
         type: String,
-        required: true,
         default: ''
     },
     bio: {
         type: String,
-        required: true,
         default: ''
     }
 });
+
+UserSchema.plugin(friendsPlugin({ pathName: 'friends' }));
 
 const User = mongoose.model('users', UserSchema);
 

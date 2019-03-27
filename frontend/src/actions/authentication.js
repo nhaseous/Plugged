@@ -46,6 +46,20 @@ export const getMe = () => dispatch => {
             });
 }
 
+export const getFriends = () => dispatch => {
+    axios.get('/api/users/me/friends')
+            .then(res => {
+                console.log(res.data);
+                return dispatch(getCurrentUser(res.data));
+            })
+            .catch(err => {
+                return dispatch({
+                    type: GET_ERRORS,
+                    payload: err.response.data
+                });
+            });
+}
+
 export const getCurrentUser = user => {
     return {
         type: GET_CURRENT_USER,
