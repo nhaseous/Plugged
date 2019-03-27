@@ -16,20 +16,38 @@ export const registerUser = (user, history) => dispatch => {
 
 export const loginUser = (user) => dispatch => {
     axios.post('/api/users/login', user)
-            .then(res => {
-                const { token } = res.data;
-                localStorage.setItem('jwtToken', token);
-                setAuthToken(token);
-                const decoded = jwt_decode(token);
-                dispatch(setCurrentUser(decoded));
-            })
-            .catch(err => {
-                dispatch({
-                    type: GET_ERRORS,
-                    payload: err.response.data
-                });
+        .then(res => {
+            const { token } = res.data;
+            localStorage.setItem('jwtToken', token);
+            setAuthToken(token);
+            const decoded = jwt_decode(token);
+            dispatch(setCurrentUser(decoded));
+        })
+        .catch(err => {
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
             });
+        });
 }
+
+export const ssoUser = () => dispatch => {
+    console.log("JWT ran");
+    axios.post('/api/users/ssoauth')
+        .then( res => {
+            const { token } = res.data;
+            localStorage.setItem('jwtToken', token);
+            setAuthToken(token);
+            const decoded = jwt_decode(token);
+            dispatch(setCurrentUser(decoded));
+        })
+        .catch(err => {
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
+        });
+};
 
 export const setCurrentUser = decoded => {
     return {

@@ -214,21 +214,23 @@ const checkSpotifyInfo = accessToken => {
 /**
  * In order to sso into Plugged a get must be sent to '/ssoauth' which redirects to spotify to handle
  */
-router.get("/ssoauth", (req, res) => {
+router.post('/ssoauth', (req, res) => {
     // Redirect to Github login with client_id, state and scope
     req.session.state = Math.random()
         .toString(36)
         .replace(/[^a-z]+/g, "")
         .substr(0, 10);
+
     const spotPath =
         `https://accounts.spotify.com/authorize?` +
-        `redirect_uri=localhost:5000/auth/spotify&` +
+        `redirect_uri=localhost:3000/auth/spotify&` +
         `scope=${config.scope}&` +
         `client_id=${config.client_id}&` +
         `state=${req.session.state}&`+
         `response_type=code`;
+
     console.log(`Sending users to: ${spotPath}`);
-    res.redirect(spotPath);
+    res.redirect(spotPath, 301);
 });
 
 /**
@@ -260,7 +262,7 @@ router.get("/auth/spotify", async (req, res) => {
 
         // Search database for user
         app.models.User.findOne({ username: login.display_name }, async (err, user) => {
-            // If not found, return 401:unauthorized
+            // If not error, return 401:unauthorized
             if (err) res.status(500).send({ error: "internal server error" });
             else if (!user) {
                 let model = {
@@ -275,29 +277,42 @@ router.get("/auth/spotify", async (req, res) => {
 
                 await newUser.save();
 
-                req.session.regenerate(() => {
-                    req.session.user = user;
-                    console.log(
-                        `Session.login success: ${req.session.user.username}`
-                    );
-                    // If a match, return 201:{ username, primary_email }
-                    res.redirect("/profile");
-                });
 
-                res.redirect("/profile");
-            }
-            // If found, compare hashed passwords
-            else {
-                // Regenerate session when signing in to prevent fixation
-                req.session.regenerate(() => {
-                    req.session.user = user;
-                    console.log(
-                        `Session.login success: ${req.session.user.username}`
-                    );
-                    // If a match, return 201:{ username, primary_email }
-                    res.redirect("/profile");
+                const payload = {
+                    id: newUser.id,
+                    name: newUser.name,
+                    avatar: newUser.avatar
+                }
+                jwt.sign(payload, 'secret', {
+                    expiresIn: 3600
+                }, (err, token) => {
+                    if(err) console.error('There is some error in token', err);
+                    else {
+                        res.json({
+                            success: true,
+                            token: `Bearer ${token}`
+                        });
+                    }
                 });
             }
+
+
+            const payload = {
+                id: user.id,
+                name: user.name,
+                avatar: user.avatar
+            };
+            jwt.sign(payload, 'secret', {
+                expiresIn: 3600
+            }, (err, token) => {
+                if(err) console.error('There is some error in token', err);
+                else {
+                    res.json({
+                        success: true,
+                        token: `Bearer ${token}`
+                    });
+                }
+            });
         });
 
     } catch (err) {
@@ -306,4 +321,5 @@ router.get("/auth/spotify", async (req, res) => {
         res.status(400).send(err);
     }
 });
+
 module.exports = router;
