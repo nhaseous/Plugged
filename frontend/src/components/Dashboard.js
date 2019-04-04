@@ -11,7 +11,8 @@ const styles = theme => ({
   content: {
     maxWidth: 1000,
     padding: 5,
-    margin: 'auto',
+    margin: '0 auto',
+    width: '100%'
   },
   feed: {
     backgroundColor: '#fff',

@@ -1,11 +1,28 @@
-'use strict';
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
+var now = new Date();
+
+// Define collection and schema for Post
 let Post = new Schema({
-   msg: { type: String, required: true},
-   time: { type: Date, required: true}
+  user_id: {
+    type: String
+  },
+  name: {
+    type: String
+  },
+  avatar: {
+    type: String
+  },
+  date: {
+      type: Date,
+      default: now
+  },
+  body: {
+    type: String
+  }
+},{
+    collection: 'posts'
 });
 
-User.pre("save", function(next) {
-    this.msg = this.first_name.replace(/<(?:.|\n)*?>/gm, "");
-    next();
-});
+module.exports = mongoose.model('Post', Post);

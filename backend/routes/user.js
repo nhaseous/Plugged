@@ -87,7 +87,8 @@ router.post('/login', (req, res) => {
                             const payload = {
                                 id: user.id,
                                 name: user.name,
-                                avatar: user.avatar
+                                avatar: user.avatar,
+                                email: user.email
                             }
                             jwt.sign(payload, 'secret', {
                                 expiresIn: 3600
@@ -110,32 +111,101 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) => {
-    return res.json({
+    const me = {
         id: req.user.id,
         name: req.user.name,
-        email: req.user.email
-    });
+        email: req.user.email,
+        avatar: '',
+        location: '',
+        bio: ''
+    };
+    User.findOne({email: me.email})
+        .then(user => {
+          if (user) {
+            me.avatar = user.avatar;
+            me.location = user.location;
+            me.bio = user.bio;
+          }
+            return res.json(me);
+        });
+});
+
+router.get('/me/friends', passport.authenticate('jwt', { session: false }), (req, res) => {
+    User.findOne({_id: req.user.id})
+        .then(user => {
+          if (user) {
+            User.getAcceptedFriends(user)
+            .then((friendships) => {
+              // [{ status: 'requested', added: <Date added>, friend: user2 }]
+              return res.json(friendships);
+            });
+          }
+        });
+});
+
+router.post('/me/friends/add', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log(req.body.email);
+    User.findOne({_id: req.user.id})
+        .then(user1 => {
+          if (user1) {
+            User.findOne({email: req.body.email})
+                .then(user2 => {
+                  if (user2) {
+                    User.requestFriend(user1._id, user2._id)
+                    .then(() => console.log('Request sent'));
+                  }
+                });
+          }
+        });
+});
+
+router.get('/me/friends/pending', passport.authenticate('jwt', { session: false }), (req, res) => {
+    User.findOne({_id: req.user.id})
+        .then(user => {
+          if (user) {
+            User.getPendingFriends(user)
+            .then((friendships) => {
+              // [{ status: 'requested', added: <Date added>, friend: user2 }]
+              return res.json(friendships);
+            });
+          }
+        });
 });
 
 router.post('/edit', (req, res) => {
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
 
-    User.findOne({email})
+    const { errors, isValid } = validateLoginInput(req.body);
+
+    if(!isValid) {
+        return res.status(400).json(errors);
+    }
+
+    const me = req.body;
+
+    User.findOne({email: me.email})
         .then(user => {
             if(!user) {
                 errors.email = 'User not found'
                 return res.status(404).json(errors);
             }
-            else {
-
-              user
-                .save()
-                .then(user => {
-                    res.json(user)
-                });
-            }
+            bcrypt.compare(me.password, user.password)
+                    .then(isMatch => {
+                        if(isMatch) {
+                          user.name = me.name;
+                          user.avatar = me.avatar;
+                          user.location = me.location;
+                          user.bio = me.bio;
+                          user
+                            .save()
+                            .then(user => {
+                                res.json(user)
+                            });
+                        }
+                        else {
+                            errors.password = 'Incorrect Password';
+                            return res.status(400).json(errors);
+                        }
+                    });
         });
 });
 

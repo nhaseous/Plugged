@@ -6,8 +6,11 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Table from "./Posts.js";
 import PropTypes from 'prop-types';
+import Friends from './Friends';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import { getMe } from '../actions/authentication';
 
 const styles = theme => ({
   main: {
@@ -40,9 +43,19 @@ const posts = [
         time:'December 19, 2018 03:24:00'
     }];
 
+
+
 class Profile extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+        name: '',
+        email: '',
+        avatar: '',
+        location: '',
+        bio: '',
+        errors: {}
+    }
 
     this.handleClick = this.handleClick.bind(this);
   }
@@ -51,6 +64,16 @@ class Profile extends Component {
       if(!this.props.auth.isAuthenticated) {
           this.props.history.push('/');
       }
+      axios.get('/api/users/me')
+          .then(res => {
+            console.log(res.data);
+              this.setState({
+                  name: res.data.name,
+                  avatar: res.data.avatar,
+                  location: res.data.location,
+                  bio: res.data.bio
+              })
+          })
   }
 
   handleClick() {
@@ -65,19 +88,16 @@ class Profile extends Component {
                 <CssBaseline />
                 <Grid container className={classes.main}>
                     <Grid item xs={2}>
-                        <Avatar alt="Nha Tran" src={user.avatar} className={classes.avatar} />
+                        <Avatar alt="Nha Tran" src={this.state.avatar} className={classes.avatar} />
                     </Grid>
                     <Grid item xs={8}>
                         <Grid container>
                             <Typography component="h1" variant="h4" lightWeight>
-                                {user.name}
+                              {this.state.name}
                             </Typography>
                             <Button className={classes.editButton} variant="outlined" onClick={this.handleClick}>
                                 Edit Profile
                             </Button>
-                            <Typography>
-
-                            </Typography>
                         </Grid>
                         <Grid container spacing={40}>
                             <Grid item>
@@ -91,17 +111,21 @@ class Profile extends Component {
                                 </Typography>
                             </Grid>
                         </Grid>
-                        <Typography variant="subtitle1">Vanderbilt University</Typography>
-                        <Typography variant="subtitle1">I am who I say I am.</Typography>
+                        <Typography variant="subtitle1">{this.state.location}</Typography>
+                        <Typography variant="subtitle2">{this.state.bio}</Typography>
                     </Grid>
+                    <Grid item style={{margin: 10}}>
+                      <Friends />
+                    </Grid>
+                    <Grid item xs={7} style={{margin: 10}}> <Table rows = { posts } /></Grid>
                 </Grid>
-                <Table rows = { posts } />
             </React.Fragment>
         );
     }
 }
 
 Profile.propTypes = {
+    getMe: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
 };
 
@@ -109,4 +133,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
 });
 
-export default connect(mapStateToProps, {  })(withStyles(styles)(Profile));
+export default connect(mapStateToProps, { getMe })(withStyles(styles)(Profile));

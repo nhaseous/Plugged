@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_ERRORS, SET_CURRENT_USER } from './types';
+import { GET_ERRORS, SET_CURRENT_USER, GET_CURRENT_USER } from './types';
 import setAuthToken from '../setAuthToken';
 import jwt_decode from 'jwt-decode';
 
@@ -48,6 +48,42 @@ export const ssoUser = () => dispatch => {
             });
         });
 };
+
+// need to fix; currently returns an unresolved promise with value undefined
+export const getMe = () => dispatch => {
+    axios.get('/api/users/me')
+            .then(res => {
+                console.log(res.data);
+                return dispatch(getCurrentUser(res.data));
+            })
+            .catch(err => {
+                return dispatch({
+                    type: GET_ERRORS,
+                    payload: err.response.data
+                });
+            });
+}
+
+export const getFriends = () => dispatch => {
+    axios.get('/api/users/me/friends')
+            .then(res => {
+                console.log(res.data);
+                return dispatch(getCurrentUser(res.data));
+            })
+            .catch(err => {
+                return dispatch({
+                    type: GET_ERRORS,
+                    payload: err.response.data
+                });
+            });
+}
+
+export const getCurrentUser = user => {
+    return {
+        type: GET_CURRENT_USER,
+        payload: user
+    }
+}
 
 export const setCurrentUser = decoded => {
     return {
