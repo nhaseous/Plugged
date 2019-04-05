@@ -32,6 +32,12 @@ const UserSchema = new Schema({
     bio: {
         type: String,
         default: ''
+    },
+    mode: {
+        type: String,
+        enum: ['Listener', 'Artist', 'Venue'],
+        default: 'Listener',
+        required: true
     }
 });
 

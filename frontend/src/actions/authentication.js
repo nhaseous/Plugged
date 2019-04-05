@@ -31,10 +31,10 @@ export const loginUser = (user) => dispatch => {
         });
 }
 
-export const ssoUser = () => dispatch => {
+export const ssoUser = (user) => dispatch => {
     console.log("JWT ran");
-    axios.post('/api/users/ssoauth')
-        .then( res => {
+    axios.get('/api/users/ssoauth', user)
+        .then(res => {
             const { token } = res.data;
             localStorage.setItem('jwtToken', token);
             setAuthToken(token);

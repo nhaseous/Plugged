@@ -89,7 +89,7 @@ router.post('/login', (req, res) => {
                                 name: user.name,
                                 avatar: user.avatar,
                                 email: user.email
-                            }
+                            };
                             jwt.sign(payload, 'secret', {
                                 expiresIn: 3600
                             }, (err, token) => {
@@ -244,7 +244,7 @@ const checkCode = code => {
                 formData: {
                     code: code,
                     grant_type: 'authorization_code',
-                    redirect_uri: 'localhost:5000/auth/spotify',
+                    redirect_uri: 'localhost:5000/api/users/auth/spotify',
                     client_id: config.client_id,
                     client_secret: config.client_secret
                 }
@@ -284,7 +284,7 @@ const checkSpotifyInfo = accessToken => {
 /**
  * In order to sso into Plugged a get must be sent to '/ssoauth' which redirects to spotify to handle
  */
-router.post('/ssoauth', (req, res) => {
+router.get('/ssoauth', (req, res) => {
     // Redirect to Github login with client_id, state and scope
     req.session.state = Math.random()
         .toString(36)
@@ -293,7 +293,7 @@ router.post('/ssoauth', (req, res) => {
 
     const spotPath =
         `https://accounts.spotify.com/authorize?` +
-        `redirect_uri=localhost:3000/auth/spotify&` +
+        `redirect_uri=localhost:5000/auth/spotify&` +
         `scope=${config.scope}&` +
         `client_id=${config.client_id}&` +
         `state=${req.session.state}&`+
