@@ -32,7 +32,11 @@ const UserSchema = new Schema({
     bio: {
         type: String,
         default: ''
-    }
+    },
+    connections:[{
+        user: { type:mongoose.Schema.Types.ObjectId, ref:'User'},
+        default: ''
+    }],
 });
 
 UserSchema.plugin(friendsPlugin({ pathName: 'friends' }));

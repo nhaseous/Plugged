@@ -14,6 +14,15 @@ import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from "@material-ui/core/styles";
+import axios from 'axios';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button/Button';
+import Avatar from '@material-ui/core/Avatar';
 
 require('../styles/Inbox.css');
 
@@ -51,31 +60,104 @@ const styles = theme => ({
 class Inbox extends Component {
   constructor(props) {
     super(props);
-    this.state = { messages: messages };
+    this.state = {
+      me: {id: '', name: '', avatar: ''},
+      current: {id: '', name: 'Inbox', email: ''},
+      connections: [],
+      messages: messages,
+      open: false
+    };
     this.sendHandler = this.sendHandler.bind(this);
+    this.newChat = this.newChat.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.switchMsg = this.switchMsg.bind(this);
+    this.getFriends = this.getFriends.bind(this);
   }
 
   componentDidMount() {
       if(!this.props.auth.isAuthenticated) {
           this.props.history.push('/');
       }
+      axios.get('/api/users/me')
+          .then(res => {
+            this.setState({
+              me: {
+                id: res.data.id,
+                name: res.data.name,
+                avatar: res.data.avatar
+              }
+            });
+          });
+      this.getFriends();
+  }
+
+  getFriends() {
+    axios.get('/api/users/me/connections')
+        .then(res => {
+          let connections = (res.data.connections).map(function (element) {
+            return axios.get(`/api/users/${element._id}`)
+              .then(response => {
+                return response.data;
+              })
+          });
+          Promise.all(connections).then(users => {
+            console.log(users);
+            this.setState({connections: users.reverse()});
+            this.switchMsg(this.state.connections[0]);
+            this.forceUpdate();
+          });
+        });
   }
 
   sendHandler(message) {
-    const messageObject = {
-      username: this.props.username,
-      message
-    };
-
-    messageObject.fromMe = true;
-    this.addMessage(messageObject);
+    axios.post('/api/messages/add', {message: message, id: this.state.current.id})
+        .then(res => {
+          console.log(res.data);
+          this.switchMsg({id: this.state.current.id, name: this.state.current.name});
+          this.getFriends();
+          this.forceUpdate();
+        })
   }
 
-  addMessage(message) {
-    // Append the message to the component state
-    const messages = this.state.messages;
-    messages.push(message);
-    this.setState({ messages });
+  newChat() {
+    axios.post('/api/messages/add/user', {email: this.state.current.email})
+        .then(res => {
+          console.log(res.data);
+          this.getFriends();
+          this.handleClose();
+        })
+  }
+
+  handleClickOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  switchMsg(e) {
+    axios.post('/api/messages/get', {id: e.id})
+        .then(res => {
+          this.setState({current: {id: e.id, name: e.name}});
+          let me = this.state.me;
+          let newMessages = ((res.data).reverse()).map(function (element) {
+            let message = {message: element.message.text, username: '', fromMe: false};
+            if (element.sender == me.id) {
+              message.fromMe = true;
+            } else {
+              message.username = e.name;
+            }
+            return message;
+          })
+          this.setState({messages: newMessages});
+        });
+  }
+
+  handleInputChange(e) {
+      this.setState({
+          current: {id: this.state.current.id, name: this.state.current.name, email: e.target.value}
+      })
   }
 
   render() {
@@ -91,32 +173,58 @@ class Inbox extends Component {
           }}
         >
         <div className={classes.toolbar} />
-        <div className={classes.toolbar} />
           <List>
-            {['New', 'All', 'Archived'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon><MailIcon /></ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+            <ListItem button key="New" onClick={this.handleClickOpen}>
+              <ListItemIcon><MailIcon /></ListItemIcon>
+              <ListItemText primary='New' />
+            </ListItem>
           </List>
           <Divider />
           <List>
-            {['John Wick', 'Rick Astley', 'Dexter'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon><MailIcon /></ListItemIcon>
-                <ListItemText primary={text} />
+            {(this.state.connections).map(({id, name, avatar}) => (
+              <ListItem button key={id} onClick={() => this.switchMsg({id: id, name: name})}>
+                <ListItemIcon><Avatar alt="User pic" src={avatar}/></ListItemIcon>
+                <ListItemText primary={name} style={{paddingRight: 0}} />
               </ListItem>
             ))}
           </List>
         </Drawer>
         <Paper className={classes.paper}>
           <div className={classes.header}>
-              <h3>Inbox</h3>
+              <h3>{this.state.current.name}</h3>
           </div>
           <div className="container inbox-container">
-          <Messages messages={messages} />
+          <Messages messages={this.state.messages} />
           <ChatInput onSend={this.sendHandler} />
+          <Dialog
+            open={this.state.open}
+            onClose={this.handleClose}
+            onChange={this.handleInputChange}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">Enter email</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                What's the email of the person you want to connect to?
+              </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Email Address"
+                type="email"
+                fullWidth
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={this.newChat} color="primary">
+                Add
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </Paper>
       </React.Fragment>

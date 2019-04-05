@@ -17,7 +17,7 @@ const logo = require('../assets/logo.svg');
 
 const styles = theme => ({
     appBar: {
-        position: 'relative',
+        position: 'sticky',
         boxShadow: 'none',
         borderBottom: `1px solid ${theme.palette.grey['100']}`,
         backgroundColor: 'white',
@@ -112,7 +112,7 @@ class Navbar extends Component {
         )
         const { classes } = this.props;
         return(
-            <AppBar position="absolute" color="default" className={classes.appBar}>
+            <AppBar color="default" className={classes.appBar}>
                 <Toolbar>
                     <Grid container spacing={24} alignItems="baseline">
                         <Grid item xs={12} alignItems='baseline' className={classes.flex}>
