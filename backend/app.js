@@ -7,6 +7,7 @@ const config = require('./db');
 const cors = require('cors');
 const users = require('./routes/user');
 const posts = require('./routes/post');
+const messages = require('./routes/message');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.DB, { useNewUrlParser: true }).then(
@@ -33,6 +34,7 @@ app.use(cors());
 app.use(app.store);
 app.use('/api/users', users);
 app.use('/api/posts', posts);
+app.use('/api/messages', messages);
 
 //test
 app.get('/', function(req, res) {

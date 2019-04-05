@@ -51,7 +51,7 @@ class Friends extends Component {
   showFriends() {
     axios.get('/api/users/me/friends')
         .then(res => {
-          friends = res.data;
+          friends = res.data.friends;
           this.forceUpdate();
         })
   }

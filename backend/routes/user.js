@@ -130,6 +130,24 @@ router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) =
         });
 });
 
+router.get('/:id', (req, res) => {
+  const newUser = {
+    id: '',
+    name: '',
+    avatar: ''
+  };
+    User.findOne({_id: req.params.id})
+        .then(user => {
+          if (user) {
+            newUser.id = user._id;
+            newUser.name = user.name;
+            newUser.avatar = user.avatar;
+          }
+          console.log(newUser);
+          return res.json(newUser);
+        });
+});
+
 router.get('/me/friends', passport.authenticate('jwt', { session: false }), (req, res) => {
     User.findOne({_id: req.user.id})
         .then(user => {
@@ -137,10 +155,19 @@ router.get('/me/friends', passport.authenticate('jwt', { session: false }), (req
             User.getAcceptedFriends(user)
             .then((friendships) => {
               // [{ status: 'requested', added: <Date added>, friend: user2 }]
-              return res.json(friendships);
+              return res.json({friends: friendships});
             });
           }
         });
+});
+
+router.get('/me/connections', passport.authenticate('jwt', { session: false }), (req, res) => {
+    User.findOne({_id: req.user.id})
+        .then(user => {
+          if (user) {
+            return res.json({connections: user.connections});
+          };
+          });
 });
 
 router.post('/me/friends/add', passport.authenticate('jwt', { session: false }), (req, res) => {

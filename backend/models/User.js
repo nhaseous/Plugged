@@ -38,7 +38,11 @@ const UserSchema = new Schema({
         enum: ['Listener', 'Artist', 'Venue'],
         default: 'Listener',
         required: true
-    }
+    },
+    connections:[{
+        user: { type:mongoose.Schema.Types.ObjectId, ref:'User'},
+        default: ''
+    }],
 });
 
 UserSchema.plugin(friendsPlugin({ pathName: 'friends' }));
