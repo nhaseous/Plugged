@@ -7,9 +7,6 @@ const styles = theme => ({
 
 class NewPost extends Component {
   state = {
-    sender: '',
-    name: '',
-    avatar: '',
     body: ''
   };
 
@@ -35,14 +32,7 @@ class NewPost extends Component {
   };
 
   componentDidMount() {
-      axios.get('/api/users/me')
-          .then(res => {
-            this.setState({
-              sender: res.data.id,
-              name: res.data.name,
-              avatar: res.data.avatar
-            })
-          })
+
   }
 
   render() {

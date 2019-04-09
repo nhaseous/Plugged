@@ -7,8 +7,8 @@ let Post = require('../models/post');
 let User = require('../models/User');
 
 // Defined store route
-router.route('/add').post(function (req, res) {
-  let post = new Post(req.body);
+router.post('/add',passport.authenticate('jwt', { session: false }), (req, res) => {
+  let post = new Post({sender: req.user._id, body: req.body.body});
   post.save()
     .then(post => {
     res.status(200).json(post);
