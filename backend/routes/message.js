@@ -8,7 +8,6 @@ let User = require('../models/User');
 
 // Defined store route
 router.post('/add', passport.authenticate('jwt', { session: false }), (req, res) => {
-  console.log(req.body);
   User.findOne({_id: req.user.id})
       .then(user1 => {
         if (user1) {
@@ -16,7 +15,6 @@ router.post('/add', passport.authenticate('jwt', { session: false }), (req, res)
               .then(user2 => {
                 if (user2) {
                   let users = [user1, user2];
-                  console.log("testing");
                   const message = new Message({
                     message: {text: req.body.message},
                     users: [user1, user2],
@@ -57,7 +55,6 @@ router.post('/add', passport.authenticate('jwt', { session: false }), (req, res)
 });
 
 router.post('/add/user', passport.authenticate('jwt', { session: false }), (req, res) => {
-  console.log(req.body);
   User.findOne({_id: req.user.id})
       .then(user1 => {
         if (user1) {
@@ -85,7 +82,6 @@ router.post('/add/user', passport.authenticate('jwt', { session: false }), (req,
 // Defined get data(index or listing) route
 
 router.post('/get', passport.authenticate('jwt', { session: false }), (req, res) => {
-  console.log(req.body);
   User.findOne({_id: req.user.id})
       .then(user1 => {
         if (user1) {

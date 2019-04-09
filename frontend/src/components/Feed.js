@@ -13,6 +13,7 @@ import { Provider } from 'react-redux';
 import rootReducer from '../reducers';
 import { fetchAllPosts } from '../actions/index';
 import PostList from '../containers/PostList';
+import axios from 'axios';
 
 const styles = theme => ({
   root: {
@@ -27,13 +28,19 @@ const styles = theme => ({
   },
 });
 
+var users = [];
+
 const store = createStore(rootReducer, applyMiddleware(thunk));
-store.dispatch(fetchAllPosts());
+// store.dispatch(fetchAllPosts());
 
 
 class Feed extends Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    store.dispatch(fetchAllPosts());
   }
 
     render() {

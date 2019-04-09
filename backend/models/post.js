@@ -5,9 +5,7 @@ var now = new Date();
 
 // Define collection and schema for Post
 let Post = new Schema({
-  user_id: {
-    type: String
-  },
+  sender: { type:mongoose.Schema.Types.ObjectId, ref:'User', required:true },
   name: {
     type: String
   },
