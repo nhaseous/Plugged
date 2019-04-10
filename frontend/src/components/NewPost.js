@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-
-const styles = theme => ({
-
-});
 
 class NewPost extends Component {
   state = {

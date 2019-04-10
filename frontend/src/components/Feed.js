@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import Grid from '@material-ui/core/Grid';
-import ListItem from '@material-ui/core/ListItem/ListItem';
-import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
-import Paper from '@material-ui/core/Paper';
 import CreatePost from '../containers/CreatePost';
 import { withStyles } from '@material-ui/core/styles';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
@@ -13,7 +8,6 @@ import { Provider } from 'react-redux';
 import rootReducer from '../reducers';
 import { fetchAllPosts } from '../actions/index';
 import PostList from '../containers/PostList';
-import axios from 'axios';
 
 const styles = theme => ({
   root: {
@@ -28,23 +22,17 @@ const styles = theme => ({
   },
 });
 
-var users = [];
-
 const store = createStore(rootReducer, applyMiddleware(thunk));
 // store.dispatch(fetchAllPosts());
 
 
 class Feed extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
     store.dispatch(fetchAllPosts());
   }
 
     render() {
-      const { classes } = this.props;
       return (
         <Provider store={store}>
           <div className="container">

@@ -20,10 +20,7 @@ const styles = theme => ({
       zIndex: 1,
       '& $imageBackdrop': {
         opacity: 0.10,
-      },
-      '& $imageMarked': {
-        opacity: 0,
-      },
+      }
     },
   },
   focusVisible: {},
@@ -82,9 +79,6 @@ const images = [
 ];
 
 class Connect extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
       if(!this.props.auth.isAuthenticated) {

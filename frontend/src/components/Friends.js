@@ -22,7 +22,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import PeopleIcon from '@material-ui/icons/People';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import Grid from '@material-ui/core/Grid';
 
 var friends = [];

@@ -92,8 +92,8 @@ router.post('/get', passport.authenticate('jwt', { session: false }), (req, res)
                     .sort({ updatedAt: -1 })
                     .limit(20)
                     .then(messages => {
-                      console.log("found messages");
-                      console.log(messages);
+                      console.log("found messages between users:");
+                      console.log([user1._id, user2._id]);
                       res.json(messages);
                     })
                 }

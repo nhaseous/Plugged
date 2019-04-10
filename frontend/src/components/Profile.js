@@ -28,19 +28,9 @@ const styles = theme => ({
 
 const posts = [
     {
-        imgSrc: "https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga",
-        msg: 'Rolling Loud was amazing',
-        time: 'December 17, 2018 03:24:00'
-    },
-    {
-        imgSrc: "https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga",
-        msg: 'Kanye is going crazy',
-        time: 'December 18, 2018 03:24:00'
-    },
-    {
-        imgSrc: "https://cc-media-foxit.fichub.com/image/fox-it-mondofox/e8c0f288-781d-4d0b-98ad-fd169782b53b/scene-sottacqua-per-i-sequel-di-avatar-maxw-654.jpga",
-        msg: 'I cannot wait for Schoolboys album',
-        time:'December 19, 2018 03:24:00'
+        avatar: '',
+        body: 'Your posts can be found here.',
+        time: 'December 31, 1999 23:59:59'
     }];
 
 
@@ -66,7 +56,6 @@ class Profile extends Component {
       }
       axios.get('/api/users/me')
           .then(res => {
-            console.log(res.data);
               this.setState({
                   name: res.data.name,
                   avatar: res.data.avatar,
@@ -82,7 +71,6 @@ class Profile extends Component {
 
     render() {
         const { classes } = this.props;
-        const {isAuthenticated, user} = this.props.auth;
         return (
             <React.Fragment>
                 <CssBaseline />
@@ -92,7 +80,7 @@ class Profile extends Component {
                     </Grid>
                     <Grid item xs={8}>
                         <Grid container>
-                            <Typography component="h1" variant="h4" lightWeight>
+                            <Typography component="h1" variant="h4">
                               {this.state.name}
                             </Typography>
                             <Button className={classes.editButton} variant="outlined" onClick={this.handleClick}>

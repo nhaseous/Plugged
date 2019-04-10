@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Post from '../components/Post';
 import { deletePost } from '../actions';
-import axios from 'axios';
 
 function PostList({ posts, onDelete }) {
   if(!posts.length) {
@@ -16,7 +15,7 @@ function PostList({ posts, onDelete }) {
     <div>
       {posts.map(post => {
         return (
-          <Post user={ post.user } post={ post.post } onDelete={ onDelete } key={ post._id } />
+          <Post user={ post.user } post={ post.post } onDelete={ onDelete } key={ post.post._id } />
         );
       })}
     </div>

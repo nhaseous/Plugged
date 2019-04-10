@@ -8,7 +8,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography'
+import Typography from '@material-ui/core/Typography';
+import axios from 'axios';
+import Time from 'react-time';
 
 const styles = theme => ({
     root: {
@@ -35,17 +37,24 @@ let createData = el => {
 class SimpleTable extends Component {
     constructor(props) {
         super(props);
-        console.log(props);
+        this.state = {
+          me: {avatar: ''},
+          posts: [{body: '', date: ''}]
+        };
     }
 
+    componentDidMount() {
+      axios.get('api/posts/me').then(res => {
+        this.setState({
+          me: {avatar: res.data.user.avatar},
+          posts: (res.data.posts).map(function(element) {
+            return element;
+          })});
+        });
+      };
 
     render() {
-        const data = this.props.rows.map(el => createData(el));
-        const sent = time => {
-            let diff = Date.now() - new Date(time);
-        };
-
-        console.log(data);
+        const data = this.state.posts.map(el => createData({body: el.body, date: el.date}));
 
         return (
             <Paper className={this.props.root}>
@@ -60,10 +69,12 @@ class SimpleTable extends Component {
                             <TableRow key={row.id}>
                                 <TableCell className={this.props.cell} component="th" scope="row">
                                     <div display="inline-flex" flex-direction="row">
-                                        <Avatar alt="User pic" src={row.imgSrc}/>
-                                        <Typography variant="caption" align-self="right">Time</Typography>
+                                        <Avatar alt="User pic" src={this.state.me.avatar}/>
+                                        <Typography variant="caption" align-self="right">
+                                            <Time value={row.date} format="MM/DD/YYYY" />
+                                        </Typography>
                                     </div>
-                                    <Typography variant="body1" align-self="center"> {row.msg} </Typography>
+                                    <Typography variant="body1" align-self="center"> {row.body} </Typography>
                                 </TableCell>
                             </TableRow>
                         ))}

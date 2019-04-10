@@ -59,6 +59,31 @@ router.get('/',passport.authenticate('jwt', { session: false }), (req, res) => {
       );
 });
 
+router.get('/me',passport.authenticate('jwt', { session: false }), (req, res) => {
+    let me = {id: req.user._id, name: req.user.name, avatar: req.user.avatar};
+    let users = [];
+
+    User.findOne({_id: me.id})
+        .then(user => {
+          if (user) {
+              users.push(me);
+              let userIds = users.map(function(element) {return element.id});
+              console.log(`fetching posts from user IDs:`);
+              console.log(userIds);
+
+              Post.find({sender: {$in: userIds}}, function (err, posts){
+                if(err){
+                  console.log(err);
+                }
+                else {
+                  res.json({user: me, posts: posts.reverse()});
+                }
+              });
+          }
+        }
+      );
+});
+
 // Defined delete | remove | destroy route
 router.route('/delete/:id').get(function (req, res) {
     Post.findByIdAndRemove({_id: req.params.id}, function(err, post){

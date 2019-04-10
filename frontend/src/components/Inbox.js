@@ -6,7 +6,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Divider from '@material-ui/core/Divider';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -98,7 +97,6 @@ class Inbox extends Component {
               })
           });
           Promise.all(connections).then(users => {
-            console.log(users);
             this.setState({connections: users.reverse()});
             if (this.state.connections[0]) {
               this.switchMsg(this.state.connections[0]);
@@ -142,7 +140,7 @@ class Inbox extends Component {
           let me = this.state.me;
           let newMessages = ((res.data).reverse()).map(function (element) {
             let message = {message: element.message.text, username: '', fromMe: false};
-            if (element.sender == me.id) {
+            if (element.sender === me.id) {
               message.fromMe = true;
             } else {
               message.username = e.name;
