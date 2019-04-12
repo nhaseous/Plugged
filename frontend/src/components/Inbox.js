@@ -143,7 +143,7 @@ class Inbox extends Component {
           let me = this.state.me;
           let newMessages = ((res.data).reverse()).map(function (element) {
             let message = {message: element.message.text, username: '', fromMe: false};
-            if (element.sender == me.id) {
+            if (element.sender === me.id) {
               message.fromMe = true;
             } else {
               message.username = e.name;

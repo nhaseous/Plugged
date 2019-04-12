@@ -311,7 +311,9 @@ const checkSpotifyInfo = accessToken => {
 /**
  * In order to sso into Plugged a get must be sent to '/ssoauth' which redirects to spotify to handle
  */
-router.get('/ssoauth', (req, res) => {
+router.post('/ssoauth', (req, res) => {
+    console.log('sso backend ran');
+
     // Redirect to Github login with client_id, state and scope
     req.session.state = Math.random()
         .toString(36)
@@ -327,7 +329,8 @@ router.get('/ssoauth', (req, res) => {
         `response_type=code`;
 
     console.log(`Sending users to: ${spotPath}`);
-    res.redirect(spotPath, 301);
+    res.header("Access-Control-Allow-Origin", "*");
+    res.redirect(301, spotPath);
 });
 
 /**
@@ -345,7 +348,6 @@ router.get("/auth/spotify", async (req, res) => {
         return res.status(400).send({ error: "State field required" });
     // Validate state
     try {
-        // Is this a valid GH response
         await checkState(req.session.state, req.query.state);
         // Convert code to token and scope
         const { access_token } = await checkCode(req.query.code);
@@ -358,7 +360,7 @@ router.get("/auth/spotify", async (req, res) => {
         console.log(login);
 
         // Search database for user
-        app.models.User.findOne({ username: login.display_name }, async (err, user) => {
+        User.findOne({ username: login.display_name }, async (err, user) => {
             // If not error, return 401:unauthorized
             if (err) res.status(500).send({ error: "internal server error" });
             else if (!user) {
@@ -417,6 +419,12 @@ router.get("/auth/spotify", async (req, res) => {
         // Send user to error page explaining what happened
         res.status(400).send(err);
     }
+});
+
+//test
+router.post('/foo', function(req, res) {
+    console.log("Ran");
+    res.status(200).send("Nothing");
 });
 
 module.exports = router;
