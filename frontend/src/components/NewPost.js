@@ -1,15 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-
-const styles = theme => ({
-
-});
 
 class NewPost extends Component {
   state = {
-    user_id: '',
-    name: '',
-    avatar: '',
     body: ''
   };
 
@@ -35,14 +27,7 @@ class NewPost extends Component {
   };
 
   componentDidMount() {
-      axios.get('/api/users/me')
-          .then(res => {
-            this.setState({
-              user_id: res.data.id,
-              name: res.data.name,
-              avatar: res.data.avatar
-            })
-          })
+
   }
 
   render() {

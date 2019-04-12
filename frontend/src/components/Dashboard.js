@@ -20,9 +20,6 @@ const styles = theme => ({
 });
 
 class Dashboard extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
       if(!this.props.auth.isAuthenticated) {

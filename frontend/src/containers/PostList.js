@@ -15,7 +15,7 @@ function PostList({ posts, onDelete }) {
     <div>
       {posts.map(post => {
         return (
-          <Post post={ post } onDelete={ onDelete } key={ post._id } />
+          <Post user={ post.user } post={ post.post } onDelete={ onDelete } key={ post.post._id } />
         );
       })}
     </div>

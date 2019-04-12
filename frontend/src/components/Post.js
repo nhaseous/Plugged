@@ -10,7 +10,7 @@ const styles = {
   borderRadius: '10px'
 };
 
-export default ({ post: { user_id, name, avatar, date, body, _id }, onDelete }) => {
+export default ({ user: {name, avatar}, post: { sender, date, body, _id }, onDelete }) => {
   return (
     <div style={ styles }>
       <img src={ avatar } alt="avatar" height="42" width="42" style={{marginRight: 5, marginBottom: 5}}></img>

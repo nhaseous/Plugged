@@ -6,7 +6,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Divider from '@material-ui/core/Divider';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -29,10 +28,7 @@ require('../styles/Inbox.css');
 const drawerWidth = 240;
 
 const messages = [
-  {username: 'davematthews', message: 'Hey how are you?', fromMe: true},
-  {username: 'johnwick', message: 'Not bad, wanna jam?', fromMe: false},
-  {username: 'davematthews', message: 'Sure, coming soon.', fromMe: true},
-  {username: 'johnwick', message: 'Great, see you soon!', fromMe: false},
+  {username: 'Connected', message: 'Start chatting by adding a user!', fromMe: false}
 ]
 
 const styles = theme => ({
@@ -101,9 +97,10 @@ class Inbox extends Component {
               })
           });
           Promise.all(connections).then(users => {
-            console.log(users);
             this.setState({connections: users.reverse()});
-            this.switchMsg(this.state.connections[0]);
+            if (this.state.connections[0]) {
+              this.switchMsg(this.state.connections[0]);
+            }
             this.forceUpdate();
           });
         });

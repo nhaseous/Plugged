@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
-import Tabs from '@material-ui/core/Tabs';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import { connect } from 'react-redux';
 import { logoutUser } from '../actions/authentication';
@@ -47,24 +44,7 @@ const styles = theme => ({
     tagline: {
         display: 'inline-block',
         marginLeft: 10
-    },
-  inline: {
-    display: 'inline'
-  },
-  link: {
-    textDecoration: 'none',
-    color: 'inherit'
-  },
-  productLogo: {
-    display: 'inline-block',
-    borderLeft: '1px solid grey',
-    marginLeft: 25,
-    paddingLeft: 25
-  },
-  tagline: {
-    display: 'inline-block',
-    marginLeft: 10,
-  },
+    }
 });
 
 class Navbar extends Component {
@@ -115,7 +95,7 @@ class Navbar extends Component {
             <AppBar color="default" className={classes.appBar}>
                 <Toolbar>
                     <Grid container spacing={24} alignItems="baseline">
-                        <Grid item xs={12} alignItems='baseline' className={classes.flex}>
+                        <Grid item xs={12} className={classes.flex}>
                             <React.Fragment>
                                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                                     <div className={classes.inline}>

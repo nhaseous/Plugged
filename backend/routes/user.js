@@ -142,8 +142,8 @@ router.get('/:id', (req, res) => {
             newUser.id = user._id;
             newUser.name = user.name;
             newUser.avatar = user.avatar;
+            console.log('fetching user...');
           }
-          console.log(newUser);
           return res.json(newUser);
         });
 });
@@ -155,7 +155,14 @@ router.get('/me/friends', passport.authenticate('jwt', { session: false }), (req
             User.getAcceptedFriends(user)
             .then((friendships) => {
               // [{ status: 'requested', added: <Date added>, friend: user2 }]
-              return res.json({friends: friendships});
+              // add in element.friend.posts for loading posts
+              return res.json({friends: friendships.map(function(element){return {
+                _id: element._id,
+                status: element.status,
+                added: element.added,
+                friend: { _id: element.friend._id,
+                          name: element.friend.name,
+                          avatar: element.friend.avatar}}})});
             });
           }
         });
