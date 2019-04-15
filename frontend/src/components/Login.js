@@ -13,10 +13,9 @@ class Login extends Component {
             email: '',
             password: '',
             errors: {}
-        }
+        };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handlessoAuth = this.handlessoAuth.bind(this);
     }
 
     handleInputChange(e) {
@@ -32,12 +31,6 @@ class Login extends Component {
             password: this.state.password,
         }
         this.props.loginUser(user);
-    }
-
-    handlessoAuth(ev) {
-        ev.preventDefault();
-
-        ssoUser();
     }
 
     componentDidMount() {
@@ -94,7 +87,7 @@ class Login extends Component {
                         Login User
                     </button>
                 </div>
-                <Button onClick={ ev => this.handlessoAuth(ev) }>Login with Spotify</Button>
+                <Button onClick={ () => this.props.ssoUser() }>Login with Spotify</Button>
             </form>
         </div>
         )
@@ -103,6 +96,7 @@ class Login extends Component {
 
 Login.propTypes = {
     loginUser: PropTypes.func.isRequired,
+    ssoUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     errors: PropTypes.object.isRequired
 }
@@ -110,6 +104,6 @@ Login.propTypes = {
 const mapStateToProps = (state) => ({
     auth: state.auth,
     errors: state.errors
-})
+});
 
-export  default connect(mapStateToProps, { loginUser })(Login)
+export  default connect(mapStateToProps, { loginUser, ssoUser })(Login)

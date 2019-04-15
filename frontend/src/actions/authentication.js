@@ -31,22 +31,18 @@ export const loginUser = (user) => dispatch => {
         });
 }
 
-export const ssoUser = (user) => dispatch => {
-    console.log("JWT ran");
-    axios.get('/api/users/ssoauth', user)
-        .then(res => {
+export const ssoUser = () => async dispatch => {
+    await axios.post('/api/users/ssoauth')
+        .then( res => {
             const { token } = res.data;
+            console.log(token);
             localStorage.setItem('jwtToken', token);
             setAuthToken(token);
             const decoded = jwt_decode(token);
             dispatch(setCurrentUser(decoded));
-        })
-        .catch(err => {
-            dispatch({
-                type: GET_ERRORS,
-                payload: err.response.data
-            });
-        });
+        }).catch( err => console.log(err));
+
+    console.log("JWT ran");
 };
 
 // need to fix; currently returns an unresolved promise with value undefined
