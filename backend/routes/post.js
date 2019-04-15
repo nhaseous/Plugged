@@ -22,7 +22,6 @@ router.post('/add',passport.authenticate('jwt', { session: false }), (req, res) 
 router.get('/',passport.authenticate('jwt', { session: false }), (req, res) => {
     let me = {id: req.user._id, name: req.user.name, avatar: req.user.avatar};
     let users = [];
-    let friends = [];
 
     User.findOne({_id: me.id})
         .then(user => {

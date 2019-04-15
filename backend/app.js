@@ -8,6 +8,7 @@ const cors = require('cors');
 const users = require('./routes/user');
 const posts = require('./routes/post');
 const messages = require('./routes/message');
+const logger = require('morgan');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.DB, { useNewUrlParser: true }).then(
@@ -25,21 +26,20 @@ app.store = session({
         path: "/"
     }
 });
+app.use(cors({origin: 'https://spotify.com'}));
 app.use(passport.initialize());
 require('./passport')(passport);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+
+app.use(logger('dev'));
 app.use(app.store);
 app.use('/api/users', users);
 app.use('/api/posts', posts);
 app.use('/api/messages', messages);
 
-//test
-app.get('/', function(req, res) {
-    res.send('hello');
-});
+
 
 const PORT = process.env.PORT || 5000;
 

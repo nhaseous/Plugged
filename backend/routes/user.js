@@ -320,8 +320,6 @@ const checkSpotifyInfo = accessToken => {
  */
 router.post('/ssoauth', (req, res) => {
     console.log('sso backend ran');
-
-    // Redirect to Github login with client_id, state and scope
     req.session.state = Math.random()
         .toString(36)
         .replace(/[^a-z]+/g, "")
@@ -329,14 +327,16 @@ router.post('/ssoauth', (req, res) => {
 
     const spotPath =
         `https://accounts.spotify.com/authorize?` +
-        `redirect_uri=localhost:5000/auth/spotify&` +
+        `redirect_uri=localhost:5000/api/users/spotify&` +
         `scope=${config.scope}&` +
         `client_id=${config.client_id}&` +
         `state=${req.session.state}&`+
         `response_type=code`;
 
     console.log(`Sending users to: ${spotPath}`);
-    res.header("Access-Control-Allow-Origin", "*");
+    //res.header("Access-Control-Allow-Origin", "*");
+    //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    console.log(res.getHeaders());
     res.redirect(301, spotPath);
 });
 
@@ -345,7 +345,7 @@ router.post('/ssoauth', (req, res) => {
  * (checkState, checkCode, checkSpotifyInfo) then the mongodb database will be searched for a user. If said user
  * doesn't exist the Spotify user object will be used to fill and create a user
  */
-router.get("/auth/spotify", async (req, res) => {
+router.get("/spotify", async (req, res) => {
     console.log("Hello motherfucker");
     // Must have a temp code from GH
     if (!req.query.code)
@@ -358,7 +358,7 @@ router.get("/auth/spotify", async (req, res) => {
         await checkState(req.session.state, req.query.state);
         // Convert code to token and scope
         const { access_token } = await checkCode(req.query.code);
-        // Get GH username
+        // Get username
         const { login } = await checkSpotifyInfo(access_token);
         console.log(`Fetched Spotify user: ${login.display_name}`);
         // Save the login and token to the session for future use
@@ -387,7 +387,8 @@ router.get("/auth/spotify", async (req, res) => {
                 const payload = {
                     id: newUser.id,
                     name: newUser.name,
-                    avatar: newUser.avatar
+                    avatar: newUser.avatar,
+                    access_token: access_token
                 }
                 jwt.sign(payload, 'secret', {
                     expiresIn: 3600
@@ -406,14 +407,15 @@ router.get("/auth/spotify", async (req, res) => {
             const payload = {
                 id: user.id,
                 name: user.name,
-                avatar: user.avatar
+                avatar: user.avatar,
+                access_token: access_token
             };
             jwt.sign(payload, 'secret', {
                 expiresIn: 3600
             }, (err, token) => {
                 if(err) console.error('There is some error in token', err);
                 else {
-                    res.json({
+                    res.status(200).json({
                         success: true,
                         token: `Bearer ${token}`
                     });
