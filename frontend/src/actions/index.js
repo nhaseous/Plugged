@@ -1,7 +1,7 @@
 import { ADD_POST, DELETE_POST, FETCH_POST } from './types';
 import axios from 'axios';
 
-const apiUrl = 'http://localhost:5000/api/posts';
+const apiUrl = '/api/posts';
 
 export const createPost = ({ sender, name, avatar, body }) => {
   return (dispatch) => {
