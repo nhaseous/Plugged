@@ -32,15 +32,22 @@ export const loginUser = (user) => dispatch => {
 }
 
 export const ssoUser = () => async dispatch => {
-    await axios.post('/api/users/ssoauth')
-        .then( res => {
+    await fetch('/api/users/ssoauth',{
+        mode: 'cors',
+        headers: {
+            'Access-Control-Allow-Origin': 'https://spotify.com',
+            'Access-Control-Request-Method': 'GET, POST, PUT',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Content-Type': 'application/json'
+        }
+    }).then( res => {
             const { token } = res.data;
             console.log(token);
-            localStorage.setItem('jwtToken', token);
+            /*localStorage.setItem('jwtToken', token);
             setAuthToken(token);
             const decoded = jwt_decode(token);
-            dispatch(setCurrentUser(decoded));
-        }).catch( err => console.log(err));
+            dispatch(setCurrentUser(decoded));*/
+    }).catch( err => console.log(err));
 
     console.log("JWT ran");
 };

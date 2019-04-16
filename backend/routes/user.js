@@ -16,6 +16,79 @@ const config = {
     scope: 'user-top-read streaming'
 };
 
+
+/**
+ * Ensures that the redirect is actually from spotify servers by checking random state stored in session storage
+ *  against what should be returned by Spotify servers.
+ * @param goodState state passed back within params of the spotify call
+ * @param state state saved in session storage as validation
+ * @returns {Promise<any>}
+ */
+const checkState = (goodState, state) => {
+    return new Promise((resolve, reject) => {
+        if (goodState !== state) {
+            reject({
+                error:
+                    "Invalid state - Log out and in again before linking with Spotify."
+            });
+        } else resolve();
+    });
+};
+
+/**
+ * Checks the access code from client against the Spotify database
+ * @param code provided from within the params of the spotify redirect
+ * @returns {Promise<any>} the access token that validates a user to use access data held by spotify
+ */
+const checkCode = code => {
+    return new Promise((resolve, reject) => {
+        request.post(
+            {
+                url: `https://accounts.spotify.com/api/token`,
+                headers: {
+                    "User-Agent": "request",
+                    Accept: "application/json"
+                },
+                formData: {
+                    code: code,
+                    grant_type: 'authorization_code',
+                    redirect_uri: 'localhost:5000/api/users/auth/spotify',
+                    client_id: config.client_id,
+                    client_secret: config.client_secret
+                }
+            },
+            (err, res, body) => {
+                if (err) reject(err);
+                if (body.error) reject(body);
+                else resolve(JSON.parse(body));
+            }
+        );
+    });
+};
+
+/**
+ * Uses the newly begotten access token to fetch a Spotify user object
+ * @param accessToken the access token received previously
+ * @returns {Promise<any>} the full user object containing email, display_name, spotify id, & more
+ */
+const checkSpotifyInfo = accessToken => {
+    return new Promise((resolve, reject) => {
+        request.post(
+            {
+                url: "https://api.spotify.com/v1/me",
+                headers: {
+                    "User-Agent": "request",
+                    Authorization: `token ${accessToken}`
+                },
+            },
+            (err, res, body) => {
+                if (err) reject(err);
+                else resolve(JSON.parse(body));
+            }
+        );
+    });
+};
+
 router.post('/register', function(req, res) {
 
     const { errors, isValid } = validateRegisterInput(req.body);
@@ -108,6 +181,119 @@ router.post('/login', (req, res) => {
                         }
                     });
         });
+});
+
+
+/**
+ * In order to sso into Plugged a get must be sent to '/ssoauth' which redirects to spotify to handle
+ */
+router.get('/ssoauth', (req, res) => {
+    console.log('sso backend ran');
+    req.session.state = Math.random()
+        .toString(36)
+        .replace(/[^a-z]+/g, "")
+        .substr(0, 10);
+
+    const spotPath =
+        `https://accounts.spotify.com/authorize?` +
+        `redirect_uri=localhost:5000/api/users/spotify&` +
+        `scope=${config.scope}&` +
+        `client_id=${config.client_id}&` +
+        `state=${req.session.state}&`+
+        `response_type=code`;
+
+    console.log(`Sending users to: ${spotPath}`);
+    res.redirect(301, spotPath);
+});
+
+/**
+ * This is where Spotify will reroute a client if they sucessfully log in to Spotify and if validations pass
+ * (checkState, checkCode, checkSpotifyInfo) then the mongodb database will be searched for a user. If said user
+ * doesn't exist the Spotify user object will be used to fill and create a user
+ */
+router.get("/spotify", async (req, res) => {
+    console.log("Hello motherfucker");
+    // Must have a temp code from GH
+    if (!req.query.code)
+        return res.status(400).send({ error: "Code field required" });
+    // Must have state token too
+    if (!req.query.state)
+        return res.status(400).send({ error: "State field required" });
+    // Validate state
+    try {
+        await checkState(req.session.state, req.query.state);
+        // Convert code to token and scope
+        const { access_token } = await checkCode(req.query.code);
+        // Get username
+        const { login } = await checkSpotifyInfo(access_token);
+        console.log(`Fetched Spotify user: ${login.display_name}`);
+        // Save the login and token to the session for future use
+        req.session.user = { login: login.display_name, token: access_token };
+
+        console.log(login);
+
+        // Search database for user
+        User.findOne({ username: login.display_name }, async (err, user) => {
+            // If not error, return 401:unauthorized
+            if (err) res.status(500).send({ error: "internal server error" });
+            else if (!user) {
+                let model = {
+                    username: login.display_name,
+                    primary_email: login.email,
+                    password: login.id
+                };
+
+
+
+                let newUser = new User(model);
+
+                await newUser.save();
+
+
+                const payload = {
+                    id: newUser.id,
+                    name: newUser.name,
+                    avatar: newUser.avatar,
+                    access_token: access_token
+                }
+                jwt.sign(payload, 'secret', {
+                    expiresIn: 3600
+                }, (err, token) => {
+                    if(err) console.error('There is some error in token', err);
+                    else {
+                        res.json({
+                            success: true,
+                            token: `Bearer ${token}`
+                        });
+                    }
+                });
+            }
+
+
+            const payload = {
+                id: user.id,
+                name: user.name,
+                avatar: user.avatar,
+                access_token: access_token
+            };
+            jwt.sign(payload, 'secret', {
+                expiresIn: 3600
+            }, (err, token) => {
+                if(err) console.error('There is some error in token', err);
+                else {
+                    res.status(200).json({
+                        success: true,
+                        token: `Bearer ${token}`
+                    });
+                }
+            });
+        });
+
+    } catch (err) {
+        console.log(err);
+        // Send user to error page explaining what happened
+        res.status(400).send(err);
+    }
 });
 
 router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -241,193 +427,6 @@ router.post('/edit', (req, res) => {
                         }
                     });
         });
-});
-
-/**
- * Ensures that the redirect is actually from spotify servers by checking random state stored in session storage
- *  against what should be returned by Spotify servers.
- * @param goodState state passed back within params of the spotify call
- * @param state state saved in session storage as validation
- * @returns {Promise<any>}
- */
-const checkState = (goodState, state) => {
-    return new Promise((resolve, reject) => {
-        if (goodState !== state) {
-            reject({
-                error:
-                    "Invalid state - Log out and in again before linking with Spotify."
-            });
-        } else resolve();
-    });
-};
-
-/**
- * Checks the access code from client against the Spotify database
- * @param code provided from within the params of the spotify redirect
- * @returns {Promise<any>} the access token that validates a user to use access data held by spotify
- */
-const checkCode = code => {
-    return new Promise((resolve, reject) => {
-        request.post(
-            {
-                url: `https://accounts.spotify.com/api/token`,
-                headers: {
-                    "User-Agent": "request",
-                    Accept: "application/json"
-                },
-                formData: {
-                    code: code,
-                    grant_type: 'authorization_code',
-                    redirect_uri: 'localhost:5000/api/users/auth/spotify',
-                    client_id: config.client_id,
-                    client_secret: config.client_secret
-                }
-            },
-            (err, res, body) => {
-                if (err) reject(err);
-                if (body.error) reject(body);
-                else resolve(JSON.parse(body));
-            }
-        );
-    });
-};
-
-/**
- * Uses the newly begotten access token to fetch a Spotify user object
- * @param accessToken the access token received previously
- * @returns {Promise<any>} the full user object containing email, display_name, spotify id, & more
- */
-const checkSpotifyInfo = accessToken => {
-    return new Promise((resolve, reject) => {
-        request.post(
-            {
-                url: "https://api.spotify.com/v1/me",
-                headers: {
-                    "User-Agent": "request",
-                    Authorization: `token ${accessToken}`
-                },
-            },
-            (err, res, body) => {
-                if (err) reject(err);
-                else resolve(JSON.parse(body));
-            }
-        );
-    });
-};
-
-/**
- * In order to sso into Plugged a get must be sent to '/ssoauth' which redirects to spotify to handle
- */
-router.post('/ssoauth', (req, res) => {
-    console.log('sso backend ran');
-    req.session.state = Math.random()
-        .toString(36)
-        .replace(/[^a-z]+/g, "")
-        .substr(0, 10);
-
-    const spotPath =
-        `https://accounts.spotify.com/authorize?` +
-        `redirect_uri=localhost:5000/api/users/spotify&` +
-        `scope=${config.scope}&` +
-        `client_id=${config.client_id}&` +
-        `state=${req.session.state}&`+
-        `response_type=code`;
-
-    console.log(`Sending users to: ${spotPath}`);
-    //res.header("Access-Control-Allow-Origin", "*");
-    //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    console.log(res.getHeaders());
-    res.redirect(301, spotPath);
-});
-
-/**
- * This is where Spotify will reroute a client if they sucessfully log in to Spotify and if validations pass
- * (checkState, checkCode, checkSpotifyInfo) then the mongodb database will be searched for a user. If said user
- * doesn't exist the Spotify user object will be used to fill and create a user
- */
-router.get("/spotify", async (req, res) => {
-    console.log("Hello motherfucker");
-    // Must have a temp code from GH
-    if (!req.query.code)
-        return res.status(400).send({ error: "Code field required" });
-    // Must have state token too
-    if (!req.query.state)
-        return res.status(400).send({ error: "State field required" });
-    // Validate state
-    try {
-        await checkState(req.session.state, req.query.state);
-        // Convert code to token and scope
-        const { access_token } = await checkCode(req.query.code);
-        // Get username
-        const { login } = await checkSpotifyInfo(access_token);
-        console.log(`Fetched Spotify user: ${login.display_name}`);
-        // Save the login and token to the session for future use
-        req.session.user = { login: login.display_name, token: access_token };
-
-        console.log(login);
-
-        // Search database for user
-        User.findOne({ username: login.display_name }, async (err, user) => {
-            // If not error, return 401:unauthorized
-            if (err) res.status(500).send({ error: "internal server error" });
-            else if (!user) {
-                let model = {
-                    username: login.display_name,
-                    primary_email: login.email,
-                    password: login.id
-                };
-
-
-
-                let newUser = new User(model);
-
-                await newUser.save();
-
-
-                const payload = {
-                    id: newUser.id,
-                    name: newUser.name,
-                    avatar: newUser.avatar,
-                    access_token: access_token
-                }
-                jwt.sign(payload, 'secret', {
-                    expiresIn: 3600
-                }, (err, token) => {
-                    if(err) console.error('There is some error in token', err);
-                    else {
-                        res.json({
-                            success: true,
-                            token: `Bearer ${token}`
-                        });
-                    }
-                });
-            }
-
-
-            const payload = {
-                id: user.id,
-                name: user.name,
-                avatar: user.avatar,
-                access_token: access_token
-            };
-            jwt.sign(payload, 'secret', {
-                expiresIn: 3600
-            }, (err, token) => {
-                if(err) console.error('There is some error in token', err);
-                else {
-                    res.status(200).json({
-                        success: true,
-                        token: `Bearer ${token}`
-                    });
-                }
-            });
-        });
-
-    } catch (err) {
-        console.log(err);
-        // Send user to error page explaining what happened
-        res.status(400).send(err);
-    }
 });
 
 //test
