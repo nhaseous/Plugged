@@ -90,12 +90,10 @@ class Profile extends Component {
                         <Grid container spacing={40}>
                             <Grid item>
                                 <Typography variant="subtitle1">
-                                    <b>132</b> posts
                                 </Typography>
                             </Grid>
                             <Grid item>
                                 <Typography variant="subtitle1">
-                                    <b>325</b> friends
                                 </Typography>
                             </Grid>
                         </Grid>

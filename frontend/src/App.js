@@ -6,7 +6,9 @@ import jwt_decode from 'jwt-decode';
 import setAuthToken from './setAuthToken';
 import { setCurrentUser, logoutUser } from './actions/authentication';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import { blue, indigo } from '@material-ui/core/colors'
+import DateFnsUtils from '@date-io/date-fns';
 
 import Navbar from './components/Navbar';
 import Register from './components/Register';
@@ -54,23 +56,25 @@ class App extends Component {
     render() {
         return (
           <MuiThemeProvider theme={theme}>
-            <Provider store={store}>
-                <Router>
-                    <div>
-                        <Navbar/>
-                        <Route exact path="/" component={Home}/>
-                        <div className="container">
-                            <Route exact path="/register" component={Register}/>
-                            <Route exact path="/login" component={Login}/>
-                            <Route exact path="/connect" component={Connect}/>
-                            <Route exact path="/dashboard" component={Dashboard}/>
-                            <Route exact path="/inbox" component={Inbox}/>
-                            <Route exact path="/profile" component={Profile}/>
-                            <Route exact path="/profile/edit" component={ ProfileEdit } />
-                        </div>
-                    </div>
-                </Router>
-            </Provider>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <Provider store={store}>
+                  <Router>
+                      <div>
+                          <Navbar/>
+                          <Route exact path="/" component={Home}/>
+                          <div className="container">
+                              <Route exact path="/register" component={Register}/>
+                              <Route exact path="/login" component={Login}/>
+                              <Route exact path="/connect" component={Connect}/>
+                              <Route exact path="/dashboard" component={Dashboard}/>
+                              <Route exact path="/inbox" component={Inbox}/>
+                              <Route exact path="/profile" component={Profile}/>
+                              <Route exact path="/profile/edit" component={ ProfileEdit } />
+                          </div>
+                      </div>
+                  </Router>
+              </Provider>
+            </MuiPickersUtilsProvider>
           </MuiThemeProvider>
         );
     }
