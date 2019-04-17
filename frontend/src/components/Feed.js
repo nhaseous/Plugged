@@ -6,8 +6,9 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import rootReducer from '../reducers';
-import { fetchAllPosts } from '../actions/index';
+import { fetchAllPosts, getEvents } from '../actions/index';
 import PostList from '../containers/PostList';
+import EventList from '../containers/EventList';
 
 const styles = theme => ({
   root: {
@@ -30,19 +31,23 @@ class Feed extends Component {
 
   componentDidMount() {
     store.dispatch(fetchAllPosts());
+    store.dispatch(getEvents({page: 0}));
   }
 
     render() {
       return (
         <Provider store={store}>
-          <div className="container">
-            <div className="col">
-              <div className="row-md-6">
+          <div className="row">
+            <div className="col-sm-8">
+              <div className="row-sm-6">
                 <CreatePost />
               </div>
-              <div className="row-md-6">
+              <div className="row-sm-6">
                 <PostList />
               </div>
+            </div>
+            <div className="col-sm-4">
+              <EventList />
             </div>
           </div>
         </Provider>

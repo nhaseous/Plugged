@@ -8,6 +8,7 @@ const cors = require('cors');
 const users = require('./routes/user');
 const posts = require('./routes/post');
 const messages = require('./routes/message');
+const events = require('./routes/event');
 const logger = require('morgan');
 
 mongoose.Promise = global.Promise;
@@ -38,7 +39,7 @@ app.use(app.store);
 app.use('/api/users', users);
 app.use('/api/posts', posts);
 app.use('/api/messages', messages);
-
+app.use('/api/events', events);
 
 
 const PORT = process.env.PORT || 5000;

@@ -1,4 +1,4 @@
-import { ADD_POST, DELETE_POST, FETCH_POST } from './types';
+import { ADD_POST, DELETE_POST, FETCH_POST, GET_EVENTS } from './types';
 import axios from 'axios';
 
 const apiUrl = '/api/posts';
@@ -67,3 +67,22 @@ export const fetchAllPosts = () => {
         });
   };
 };
+
+export const getEventsSuccess = (events) => {
+  return {
+    type: GET_EVENTS,
+    events
+  }
+}
+
+export const getEvents = (query) => {
+  return (dispatch) => {
+    return axios.post('/api/events/', query)
+        .then(response => {
+          dispatch(getEventsSuccess(response.data))
+        })
+        .catch(error => {
+          throw(error);
+        });
+  }
+}
