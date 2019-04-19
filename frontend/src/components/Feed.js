@@ -31,7 +31,7 @@ class Feed extends Component {
 
   componentDidMount() {
     store.dispatch(fetchAllPosts());
-    store.dispatch(getEvents({page: 0}));
+    store.dispatch(getEvents({page: 0, classificationId: "KZFzniwnSyZfZ7v7nJ"}));
   }
 
     render() {

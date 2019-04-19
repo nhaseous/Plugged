@@ -9,13 +9,17 @@ const styles = {
   width: "100%"
 }
 
+var curPage = 0;
 var maxPage = 0;
+var results = 0;
 var query = ''
 
 function EventList({ events, onPrev, onNext }) {
 
   if (events.items) {
+    curPage = events.page.number+1;
     maxPage = events.page.totalPages;
+    results = events.page.totalElements;
     query = events.qs;
   }
 
@@ -38,6 +42,7 @@ function EventList({ events, onPrev, onNext }) {
             <div style={{background: "white"}}>
               <SearchEvents />
             </div>
+            <p style={{textAlign: "right"}}>{results} Results</p>
               <div id="events" className="list-group">
                 {(events.items).map(show => {
                   return (
@@ -51,6 +56,7 @@ function EventList({ events, onPrev, onNext }) {
                 <ul className="pager" style={{textAlign: "center", paddingLeft: 0, listStyle: "none"}}>
                   <li id="prev" className="previous"><a href="#" onClick={onPrev} style={{float: "left", padding: "5px 15px", backgroundColor: "#fff", border: "1px solid #ddd", borderRadius: "15px", color: "#337ab7", textDecoration: "none"}}><span aria-hidden="true">&larr;</span></a></li>
                   <li id="next" className="next"><a href="#" onClick={onNext} style={{float: "right", padding: "5px 15px", backgroundColor: "#fff", border: "1px solid #ddd", borderRadius: "15px", color: "#337ab7", textDecoration: "none"}}><span aria-hidden="true">&rarr;</span></a></li>
+                  <p style={{fontSize: "16px", float: "center", paddingTop: "5px"}}>{curPage}/{maxPage}</p>
                 </ul>
               </nav>
             </div>
@@ -91,7 +97,7 @@ const mapDispatchToProps = dispatch => {
       query.page = query.page + 1;
       // need to check for edge cases
       if (query.page > 0) {
-        if (maxPage & query.page > maxPage - 1) {
+        if (query.page > maxPage - 1) {
           query.page = 0;
         }
       }
