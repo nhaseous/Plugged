@@ -25,8 +25,22 @@ function EventList({ events, onPrev, onNext }) {
 
   if(!events.items) {
     return (
-      <div>
-        No Events
+      <div className="container" style={styles}>
+        <div className="row">
+          <div className="col-xs-6">
+          <div id='events-panel' className="panel panel-primary" style={{background: "#337ab7", border: "1px solid #337ab7"}}>
+            <div className="panel-heading" style={{padding: "10px 10px 0px 10px"}}>
+              <p className="panel-title" style={{background: "#337ab7", color: "white", fontSize: "25px"}}>Events</p>
+            </div>
+            <div className="panel-body" style={{padding: "10px", background: "white", fontSize: "14px", lineHeight: "1.4"}}>
+            <div style={{background: "white"}}>
+              <SearchEvents />
+            </div>
+            <p style={{textAlign: "right"}}>No results found</p>
+            </div>
+          </div>
+          </div>
+        </div>
       </div>
     )
   }
