@@ -7,3 +7,5 @@ export const DELETE_POST = 'DELETE_POST';
 export const FETCH_POST = 'FETCH_POST';
 
 export const GET_EVENTS = 'GET_EVENTS';
+export const ADD_EVENT = 'ADD_EVENT';
+export const CLEAR_EVENT = 'CLEAR_EVENT';

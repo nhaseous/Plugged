@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Post from '../components/Post';
-import { deletePost } from '../actions';
 
 function PostList({ posts, onDelete }) {
   if(!posts.length) {
@@ -15,7 +14,7 @@ function PostList({ posts, onDelete }) {
     <div>
       {posts.map(post => {
         return (
-          <Post user={ post.user } post={ post.post } onDelete={ onDelete } key={ post.post._id } />
+          <Post user={ post.user } post={ post.post } key={ post.post._id } />
         );
       })}
     </div>
@@ -30,9 +29,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onDelete: id => {
-      dispatch(deletePost(id));
-    }
+
   };
 };
 

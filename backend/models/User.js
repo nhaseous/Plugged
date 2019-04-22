@@ -43,6 +43,10 @@ const UserSchema = new Schema({
         user: { type:mongoose.Schema.Types.ObjectId, ref:'User'},
         default: ''
     }],
+    events:[{
+      event: {id: {type: String}, name: {type: String}, date: {type: String}, venue: {type: String}, city: {type: String}},
+      status: {type: String, enum: ['going', 'interested'], default: 'interested'}
+    }]
 });
 
 UserSchema.plugin(friendsPlugin({ pathName: 'friends' }));

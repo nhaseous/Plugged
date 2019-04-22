@@ -68,9 +68,6 @@ class Navbar extends Component {
                     <Link className="nav-link" to="/inbox">Messages</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="/connect">Connect</Link>
-                </li>
-                <li className="nav-item">
                     <a href="#" className="nav-link" onClick={this.onLogout.bind(this)}>
                         <img src={user.avatar} alt={user.name} title={user.name}
                              className="rounded-circle"

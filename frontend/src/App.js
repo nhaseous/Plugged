@@ -14,7 +14,6 @@ import Navbar from './components/Navbar';
 import Register from './components/Register';
 import Login from './components/Login';
 import Home from './components/Home';
-import Connect from './components/Connect';
 import Dashboard from './components/Dashboard';
 import Inbox from './components/Inbox';
 import Profile from './components/Profile';
@@ -65,7 +64,6 @@ class App extends Component {
                           <div className="container">
                               <Route exact path="/register" component={Register}/>
                               <Route exact path="/login" component={Login}/>
-                              <Route exact path="/connect" component={Connect}/>
                               <Route exact path="/dashboard" component={Dashboard}/>
                               <Route exact path="/inbox" component={Inbox}/>
                               <Route exact path="/profile" component={Profile}/>

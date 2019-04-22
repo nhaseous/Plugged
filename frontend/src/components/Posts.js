@@ -39,7 +39,7 @@ class SimpleTable extends Component {
         super(props);
         this.state = {
           me: {avatar: ''},
-          posts: [{body: '', date: ''}]
+          posts: [{_id: '', body: '', date: ''}]
         };
     }
 
@@ -53,15 +53,21 @@ class SimpleTable extends Component {
         });
       };
 
+    onDelete(id) {
+      axios.get(`api/posts/delete/${id}`).then(res => {
+        window.location.reload();
+      });
+    }
+
     render() {
-        const data = this.state.posts.map(el => createData({body: el.body, date: el.date}));
+        const data = this.state.posts.map(el => createData({_id: el._id, body: el.body, date: el.date}));
 
         return (
             <Paper className={this.props.root}>
                 <Table className={this.props.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center">Posts</TableCell>
+                            <TableCell align="center" style={{width: "100%"}}>Posts</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -76,6 +82,9 @@ class SimpleTable extends Component {
                                     </div>
                                     <Typography variant="body1" align-self="center"> {row.body} </Typography>
                                 </TableCell>
+                                <TableCell><button className="btn btn-danger" type="button" onClick={() => this.onDelete(row._id)} style={{float: "right"}}>
+                                  Remove
+                                </button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
